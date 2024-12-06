@@ -9,8 +9,12 @@ uvicorn app.main:app --reload
 
 python3 -m venv .venv
 
+unix: 
+    source .venv/bin/activate  
+windows: 
+    .venv\Scripts\activate
 
-unix: source .venv/bin/activate   o  windows: .venv\Scripts\activate
+pip3 install -r requirements.txt
 
 ### Run service
 
