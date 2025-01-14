@@ -1,14 +1,18 @@
-from fastapi import FastAPI
 from dotenv import load_dotenv
+load_dotenv() 
+
+from fastapi import FastAPI
+
+
 import os
 
 from app.llm import llm_router
 from app.tts import tts_router
 from app.image_gen import image_gen
+from app.modules.mongo import mongo_controller
 
 from fastapi.responses import HTMLResponse
 
-load_dotenv() 
 
 from app.tts import tts_router
 
@@ -18,6 +22,7 @@ app = FastAPI()
 app.include_router(tts_router.router)
 app.include_router(image_gen.router)
 app.include_router(llm_router.router)
+app.include_router(mongo_controller.router)
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -36,4 +41,5 @@ def read_item():
 def showVariable():
     print(os.getenv('ENV'))
     print(os.getenv('VERSION'))
+
     return os.getenv('ENV'), os.getenv('VERSION')

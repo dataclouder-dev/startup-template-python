@@ -1,8 +1,9 @@
-fastapi
-uvicorn
+fastapi[standard]==0.115.6
 pymongo[srv]==4.10.1 # Mongo db driver
 oauth2client==4.1.3 
 google-cloud-texttospeech==2.21.1       # Obtener el audio con textos
 google-generativeai==0.8.3      # Gemini. 
-pydantic-ai==0.0.9
+pydantic-ai==0.0.18
 python-dotenv==1.0.1
+fal-client==0.5.6   # to generate image with this client
+pillow==10.3.0      # to help image manipulation
