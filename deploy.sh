@@ -1,4 +1,6 @@
+# TODO i think i create this based on the node deploy.sh, check that is working first time adding proper variables
 #!/bin/bash
+
 
 # Configuration: use same sintax convention, no capital letters, no _ and no spaces
 PROJECT_ID="poder-del-guion"

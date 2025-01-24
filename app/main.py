@@ -3,7 +3,6 @@ load_dotenv()
 
 from fastapi import FastAPI
 
-
 import os
 
 from app.llm import llm_router
@@ -13,6 +12,7 @@ from app.modules.mongo import mongo_controller
 
 from fastapi.responses import HTMLResponse
 
+from dc_conversations.pydanticai_agents import agent_endpoint
 
 from app.tts import tts_router
 
@@ -23,6 +23,7 @@ app.include_router(tts_router.router)
 app.include_router(image_gen.router)
 app.include_router(llm_router.router)
 app.include_router(mongo_controller.router)
+app.include_router(agent_endpoint.router)
 
 
 @app.get("/", response_class=HTMLResponse)
