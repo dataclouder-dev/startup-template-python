@@ -66,17 +66,27 @@ Once running, access the API documentation at: http://127.0.0.1:8000/docs
 | Production | https://..... |
 
 
-
 ## Manual deploy
 
-### 1) Set environment variables
+#### 1) Set environment variables
     add .env file to the root of the project
 
-### 2) Build docker image
-    make build-docker
+#### 2) Build docker image
+    make gcp-build
 
-### 3) Deploy to Google Cloud Run
-    make deploy-gcp
+#### 3) Deploy to Google Cloud Run
+    make gcp-deploy
+
+### Automated Deployment With Cloud Build 
+
+Note: before try to automate the deployment, i highly recommend do one manual deployment to check if everything is working. specially becouse for every cloud run service, variables need to be set first time, consecutives times no need. also check first deployment is in gcr default repository for artifact, but for automated is in custom repository
+
+1. Fork the repository
+2. Go to cloud build and create a new trigger
+3. Grant github access, select the repository and accept conditions
+4. Add seetings for the trigger to your needs
+5. Optional: Add permissions to the service account, Logs Writer, Cloud Run Admin or log only default logs
+6. Add the repository in artifact registry (recommended add policies to remove old versions)
 
 
 ### Poetry quick tutorial in case first time using it
