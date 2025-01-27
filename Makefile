@@ -1,5 +1,12 @@
 include .env
 
+# Variables for deployment
+PROJECT_ID ?= dataclouder-dev
+IMAGE_NAME ?= node-app-image
+REGION ?= us-central1
+SERVICE_NAME ?= node-server
+
+
 .PHONY: deploy build run-local install clean help
 
 help:
@@ -29,12 +36,17 @@ build-gcp:
 
 deploy-gcp:
 	@echo "-> Deploying Lastest Build $(PROJECT_ID)/$(IMAGE_NAME) to Google Cloud Run... "
+	@ENV_VARS=$$(python3 scripts/env-parser.py); \
+	echo "Environment Variables to be deployed:"; \
+	echo "$$ENV_VARS"; 
 	gcloud run deploy $(SERVICE_NAME) \
 		--image gcr.io/$(PROJECT_ID)/$(IMAGE_NAME) \
 		--project $(PROJECT_ID) \
 		--region $(REGION) \
 		--platform managed \
-		--allow-unauthenticated
+		--allow-unauthenticated \
+		--set-env-vars "$${ENV_VARS}"
+
 
 cloud-deploy: 
 	make build-gcp
@@ -49,13 +61,12 @@ build-docker:
 # Run the Docker image
 run-docker:
 	@echo "Running Docker image named $(IMAGE_NAME) ..."
-	docker run -it -p 8080:8080 $(IMAGE_NAME)
-
-
-run-local:
-	uvicorn main:app --reload
+	docker run -it -p 8000:8080 $(IMAGE_NAME)
 
 
 clean:
 	find . -type d -name "__pycache__" -exec rm -rf {} +
 	find . -type f -name "*.pyc" -delete 
+
+
+
