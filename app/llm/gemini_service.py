@@ -4,10 +4,13 @@ from google.generativeai.types import HarmCategory, HarmBlockThreshold
 
 from app.llm.classes import ChatMessageDict
 
+import os
 
-key_qa = 'AIzaSyBXc3li7jUNSGOjITHXhnWzvMjEBLgExRI'
 
-genai.configure(api_key=key_qa)
+api_key = os.environ["GEMINI_API_KEY"]
+
+
+genai.configure(api_key=api_key)
 
 
 def transform_to_gemini(messages_chatgpt : list[ChatMessageDict]):
