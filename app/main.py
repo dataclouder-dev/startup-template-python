@@ -13,7 +13,9 @@ from fastapi.middleware.cors import CORSMiddleware
 
 
 from fastapi.responses import HTMLResponse
-from dc_conversations.pydanticai_agents import agent_endpoint
+
+from dc_conversations.agents import agent_router
+
 from dataclouder_tts import tts_controller
 
 from app.tts import tts_router
@@ -37,7 +39,7 @@ app.include_router(tts_router.router)
 app.include_router(image_gen.router)
 app.include_router(llm_router.router)
 app.include_router(mongo_controller.router)
-app.include_router(agent_endpoint.router)
+app.include_router(agent_router.router)
 app.include_router(tts_controller.router)
 
 

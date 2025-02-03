@@ -18,9 +18,10 @@ python-dotenv = "^1.0.1"
 fal-client = "^0.5.7"
 pillow = "^11.1.0"
 pydantic-ai = "^0.0.20"
-dataclouder-conversation-ai-cards = "^0.0.7"
+dataclouder-conversation-ai-cards = "^0.0.9"
 dataclouder-tts = "^0.0.6"
 pymongo = "^4.10.1"
+dataclouder-core = "^0.0.4"
 
 
 [build-system]

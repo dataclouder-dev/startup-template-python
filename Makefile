@@ -75,5 +75,13 @@ clean:
 	find . -type d -name "__pycache__" -exec rm -rf {} +
 	find . -type f -name "*.pyc" -delete 
 
+# 📦 Package Management Scripts
+update-dc:
+	@echo "if new library is not working check: poetry cache clear . --all -> poetry update"
+	poetry cache clear . --all
+	@echo "Updating Dataclouder packages to latest versions..."
+	poetry add dataclouder-conversation-ai-cards@latest dataclouder-tts@latest dataclouder-core@latest
+	@echo "✅ Dataclouder packages updated successfully!"
+
 
 

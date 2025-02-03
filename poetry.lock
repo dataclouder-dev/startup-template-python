@@ -73,14 +73,14 @@ files = [
 
 [[package]]
 name = "certifi"
-version = "2024.12.14"
+version = "2025.1.31"
 description = "Python package for providing Mozilla's CA Bundle."
 optional = false
 python-versions = ">=3.6"
 groups = ["main"]
 files = [
-    {file = "certifi-2024.12.14-py3-none-any.whl", hash = "sha256:1275f7a45be9464efc1173084eaa30f866fe2e47d389406136d332ed4967ec56"},
-    {file = "certifi-2024.12.14.tar.gz", hash = "sha256:b650d30f370c2b724812bee08008be0c4163b163ddaec3f2546c1caf65f191db"},
+    {file = "certifi-2025.1.31-py3-none-any.whl", hash = "sha256:ca78db4565a652026a4db2bcdf68f2fb589ea80d0be70e03929ed730746b84fe"},
+    {file = "certifi-2025.1.31.tar.gz", hash = "sha256:3d5da6925056f6f18f119200434a4780a94263f10d1c21d032a6f6b2baa20651"},
 ]
 
 [[package]]
@@ -237,14 +237,31 @@ files = [
 
 [[package]]
 name = "dataclouder-conversation-ai-cards"
-version = "0.0.7"
+version = "0.0.9"
 description = "A library for managing AI conversations and character cards"
 optional = false
 python-versions = ">=3.11"
 groups = ["main"]
 files = [
-    {file = "dataclouder_conversation_ai_cards-0.0.7-py3-none-any.whl", hash = "sha256:3dcbfb7f557c813371a336eb7dd10c4057306744479f66b01b7cb9d374fbf18a"},
-    {file = "dataclouder_conversation_ai_cards-0.0.7.tar.gz", hash = "sha256:f978917f9df3074d0b1431d3876bf80f36a9501a6e6839e297695f7bf5e421ca"},
+    {file = "dataclouder_conversation_ai_cards-0.0.9-py3-none-any.whl", hash = "sha256:8810fb4e9b9c60f0d46fa658bf9b25c35dcea7542be50ea77bb5b48469632bc4"},
+    {file = "dataclouder_conversation_ai_cards-0.0.9.tar.gz", hash = "sha256:e8ecf4e5b6a93b655a23447b3f6e6da70f8c1751278f4650cb7ee16ad39747ce"},
+]
+
+[package.dependencies]
+dataclouder-core = ">=0.0.1"
+fastapi = ">=0.100.0"
+pydantic-ai = ">=0.0.19"
+
+[[package]]
+name = "dataclouder-core"
+version = "0.0.4"
+description = "A library Core for dataclouder projects"
+optional = false
+python-versions = ">=3.11"
+groups = ["main"]
+files = [
+    {file = "dataclouder_core-0.0.4-py3-none-any.whl", hash = "sha256:f85e6aefc06626027fad4ff0f61e1baebfeb3429fccf20df1bca5dcb4332e095"},
+    {file = "dataclouder_core-0.0.4.tar.gz", hash = "sha256:a976b91bb9c0310466a8b87dc9cf3a797da093dc2a0f304675c4b3e11ec2192b"},
 ]
 
 [package.dependencies]
@@ -450,14 +467,14 @@ typing = ["typing-extensions (>=4.12.2)"]
 
 [[package]]
 name = "fsspec"
-version = "2024.12.0"
+version = "2025.2.0"
 description = "File-system specification"
 optional = false
 python-versions = ">=3.8"
 groups = ["main"]
 files = [
-    {file = "fsspec-2024.12.0-py3-none-any.whl", hash = "sha256:b520aed47ad9804237ff878b504267a3b0b441e97508bd6d2d8774e3db85cee2"},
-    {file = "fsspec-2024.12.0.tar.gz", hash = "sha256:670700c977ed2fb51e0d9f9253177ed20cbde4a3e5c0283cc5385b5870c8533f"},
+    {file = "fsspec-2025.2.0-py3-none-any.whl", hash = "sha256:9de2ad9ce1f85e1931858535bc882543171d197001a0a5eb2ddc04f1781ab95b"},
+    {file = "fsspec-2025.2.0.tar.gz", hash = "sha256:1c24b16eaa0a1798afa0337aa0db9b256718ab2a89c425371f5628d22c3b6afd"},
 ]
 
 [package.extras]
@@ -484,7 +501,7 @@ sftp = ["paramiko"]
 smb = ["smbprotocol"]
 ssh = ["paramiko"]
 test = ["aiohttp (!=4.0.0a0,!=4.0.0a1)", "numpy", "pytest", "pytest-asyncio (!=0.22.0)", "pytest-benchmark", "pytest-cov", "pytest-mock", "pytest-recording", "pytest-rerunfailures", "requests"]
-test-downstream = ["aiobotocore (>=2.5.4,<3.0.0)", "dask-expr", "dask[dataframe,test]", "moto[server] (>4,<5)", "pytest-timeout", "xarray"]
+test-downstream = ["aiobotocore (>=2.5.4,<3.0.0)", "dask[dataframe,test]", "moto[server] (>4,<5)", "pytest-timeout", "xarray"]
 test-full = ["adlfs", "aiohttp (!=4.0.0a0,!=4.0.0a1)", "cloudpickle", "dask", "distributed", "dropbox", "dropboxdrivefs", "fastparquet", "fusepy", "gcsfs", "jinja2", "kerchunk", "libarchive-c", "lz4", "notebook", "numpy", "ocifs", "pandas", "panel", "paramiko", "pyarrow", "pyarrow (>=1)", "pyftpdlib", "pygit2", "pytest", "pytest-asyncio (!=0.22.0)", "pytest-benchmark", "pytest-cov", "pytest-mock", "pytest-recording", "pytest-rerunfailures", "python-snappy", "requests", "smbprotocol", "tqdm", "urllib3", "zarr", "zstandard"]
 tqdm = ["tqdm"]
 
@@ -664,14 +681,14 @@ grpc = ["grpcio (>=1.44.0,<2.0.0.dev0)"]
 
 [[package]]
 name = "griffe"
-version = "1.5.5"
+version = "1.5.6"
 description = "Signatures for entire Python programs. Extract the structure, the frame, the skeleton of your project, to generate API documentation or find breaking changes in your API."
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "griffe-1.5.5-py3-none-any.whl", hash = "sha256:2761b1e8876c6f1f9ab1af274df93ea6bbadd65090de5f38f4cb5cc84897c7dd"},
-    {file = "griffe-1.5.5.tar.gz", hash = "sha256:35ee5b38b93d6a839098aad0f92207e6ad6b70c3e8866c08ca669275b8cba585"},
+    {file = "griffe-1.5.6-py3-none-any.whl", hash = "sha256:b2a3afe497c6c1f952e54a23095ecc09435016293e77af8478ed65df1022a394"},
+    {file = "griffe-1.5.6.tar.gz", hash = "sha256:181f6666d5aceb6cd6e2da5a2b646cfb431e47a0da1fda283845734b67e10944"},
 ]
 
 [package.dependencies]
@@ -926,14 +943,14 @@ files = [
 
 [[package]]
 name = "huggingface-hub"
-version = "0.28.0"
+version = "0.28.1"
 description = "Client library to download and publish models, datasets and other repos on the huggingface.co hub"
 optional = false
 python-versions = ">=3.8.0"
 groups = ["main"]
 files = [
-    {file = "huggingface_hub-0.28.0-py3-none-any.whl", hash = "sha256:71cff4e500efe68061d94b7f6d3114e183715088be7a90bf4dd84af83b5f5cdb"},
-    {file = "huggingface_hub-0.28.0.tar.gz", hash = "sha256:c2b18c02a47d4384763caddb4d0ab2a8fc6c16e0800d6de4d55d0a896244aba3"},
+    {file = "huggingface_hub-0.28.1-py3-none-any.whl", hash = "sha256:aa6b9a3ffdae939b72c464dbb0d7f99f56e649b55c3d52406f49e0a5a620c0a7"},
+    {file = "huggingface_hub-0.28.1.tar.gz", hash = "sha256:893471090c98e3b6efbdfdacafe4052b20b84d59866fb6f54c33d9af18c303ae"},
 ]
 
 [package.dependencies]
@@ -1104,14 +1121,14 @@ files = [
 
 [[package]]
 name = "logfire-api"
-version = "3.4.0"
+version = "3.5.0"
 description = "Shim for the Logfire SDK which does nothing unless Logfire is installed"
 optional = false
 python-versions = ">=3.8"
 groups = ["main"]
 files = [
-    {file = "logfire_api-3.4.0-py3-none-any.whl", hash = "sha256:39eac7ca8fa993c95992c97382dddd6d88fc91e344a132c7672b32c1e6e3c923"},
-    {file = "logfire_api-3.4.0.tar.gz", hash = "sha256:7bf778d563659bdfb907df4712433fd5e253a3d3c3efed5ea9c22a59b59041cf"},
+    {file = "logfire_api-3.5.0-py3-none-any.whl", hash = "sha256:20377ce471e2e78233364ce3e7c53b79dbbc458e5d2f9fc02f5a59ac438310fa"},
+    {file = "logfire_api-3.5.0.tar.gz", hash = "sha256:3a35f2d4baf306d7a7e57200932892f805f57d3fdd29ec481952a1d119ffb9f3"},
 ]
 
 [[package]]
@@ -1241,14 +1258,14 @@ six = ">=1.6.1"
 
 [[package]]
 name = "openai"
-version = "1.60.2"
+version = "1.61.0"
 description = "The official Python library for the openai API"
 optional = false
 python-versions = ">=3.8"
 groups = ["main"]
 files = [
-    {file = "openai-1.60.2-py3-none-any.whl", hash = "sha256:993bd11b96900b9098179c728026f016b4982ded7ee30dfcf4555eab1171fff9"},
-    {file = "openai-1.60.2.tar.gz", hash = "sha256:a8f843e10f2855713007f491d96afb2694b11b5e02cb97c7d01a0be60bc5bb51"},
+    {file = "openai-1.61.0-py3-none-any.whl", hash = "sha256:e8c512c0743accbdbe77f3429a1490d862f8352045de8dc81969301eb4a4f666"},
+    {file = "openai-1.61.0.tar.gz", hash = "sha256:216f325a24ed8578e929b0f1b3fb2052165f3b04b0461818adaa51aa29c71f8a"},
 ]
 
 [package.dependencies]
@@ -2501,4 +2518,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "a68dce6e9e04f31ab25465af1e6904c02061474300113a77cd72b222eac4df92"
+content-hash = "59fd62f71ed68c16947f0c551935320ac38ebded323bd20cd714e00fba18a85b"
