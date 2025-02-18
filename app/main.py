@@ -10,11 +10,10 @@ from app.tts import tts_router
 from app.image_gen import image_gen
 from app.modules.mongo import mongo_controller
 from fastapi.middleware.cors import CORSMiddleware
+from dc_agent_cards.controllers import agent_controller
 
 
 from fastapi.responses import HTMLResponse
-
-from dc_conversations.agents import agent_router
 
 from dataclouder_tts import tts_controller
 
@@ -39,7 +38,8 @@ app.include_router(tts_router.router)
 app.include_router(image_gen.router)
 app.include_router(llm_router.router)
 app.include_router(mongo_controller.router)
-app.include_router(agent_router.router)
+app.include_router(agent_controller.router)
+
 app.include_router(tts_controller.router)
 
 

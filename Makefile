@@ -24,6 +24,7 @@ start:
 	
 install:
 	pip install -r requirements.txt
+	poetry install
 
 # ☁️ Google Cloud Scripts 
 
@@ -74,6 +75,9 @@ docker-run:
 clean:
 	find . -type d -name "__pycache__" -exec rm -rf {} +
 	find . -type f -name "*.pyc" -delete 
+
+make show:
+	poetry show
 
 # 📦 Package Management Scripts
 update-dc:
