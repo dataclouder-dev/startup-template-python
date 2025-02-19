@@ -1,16 +1,19 @@
-from typing import TypedDict, Union, List, Set, Dict, Any, Optional
-from enum import Enum
 from datetime import datetime
+from enum import Enum
+from typing import Any, Dict, List, Optional, Set, TypedDict, Union
+
 
 class Message(TypedDict):
     role: str  # Literal['user', 'assistant']
     content: str
 
+
 class ChatRole(str, Enum):
-    SYSTEM = 'system'
-    USER = 'user'
-    ASSISTANT = 'assistant'
-    ASSISTANT_HELPER = 'assistantHelper'
+    SYSTEM = "system"
+    USER = "user"
+    ASSISTANT = "assistant"
+    ASSISTANT_HELPER = "assistantHelper"
+
 
 class ChatMultiMessage(TypedDict):
     voice: str
@@ -20,8 +23,9 @@ class ChatMultiMessage(TypedDict):
     audioPromise: Any
     isLoading: Optional[bool]
     transcription: Optional[Any]
-    transcriptionTimestamps: Optional[List['WordTimestamps']]
+    transcriptionTimestamps: Optional[List["WordTimestamps"]]
     tag: Union[str, List[str], Set[str], Dict[str, Any]]
+
 
 class TranscriptionsWhisper(TypedDict):
     text: str
@@ -30,16 +34,19 @@ class TranscriptionsWhisper(TypedDict):
     words: Any
     duration: float
 
+
 class WordTimestamps(TypedDict):
     word: str
     start: float
     end: float
     highlighted: Any
 
+
 class ChatMessageDict(TypedDict):
     content: str
     role: ChatRole
     metadata: Optional[Any]
+
 
 class ChatMessage(TypedDict):
     content: str
@@ -56,11 +63,13 @@ class ChatMessage(TypedDict):
     transcriptionTimestamps: Optional[List[WordTimestamps]]
     voice: Optional[str]
 
+
 class Appearance(TypedDict):
     physicalDescription: str
     outfit: str
     objects: str
     quirks: str
+
 
 class CharacterCardDCData(TypedDict):
     name: str
@@ -77,28 +86,33 @@ class CharacterCardDCData(TypedDict):
     extensions: Dict[str, Any]
     appearance: Appearance
 
+
 class CharacterCardDC(TypedDict):
     spec: str  # Literal['chara_card_v2']
     spec_version: str  # Literal['2_v_dc']
     data: CharacterCardDCData
 
+
 class TextEngines(str, Enum):
-    PLANTEXT = 'plantext'
-    SIMPLE_TEXT = 'simpleText'
-    MARKDOWN_MULTI_MESSAGES = 'markdownMultiMessages'
-    MARKDOWN_SSML = 'markdownSSML'
+    PLANTEXT = "plantext"
+    SIMPLE_TEXT = "simpleText"
+    MARKDOWN_MULTI_MESSAGES = "markdownMultiMessages"
+    MARKDOWN_SSML = "markdownSSML"
+
 
 class ConversationType(str, Enum):
-    GENERAL = 'general'
-    REFLECTION = 'reflection'
-    LEARNING_EXAMPLE = 'learningExample'
-    CHALLENGE = 'challenge'
+    GENERAL = "general"
+    REFLECTION = "reflection"
+    LEARNING_EXAMPLE = "learningExample"
+    CHALLENGE = "challenge"
+
 
 class TTSConfig(TypedDict):
     voice: str
     secondaryVoice: str
     speed: str
     speedRate: float
+
 
 class MetaApp(TypedDict):
     isPublished: bool
@@ -109,8 +123,10 @@ class MetaApp(TypedDict):
     updatedAt: datetime
     takenCount: int
 
+
 class Assets(TypedDict):
     image: Any
+
 
 class IConversationCard(TypedDict):
     version: str
@@ -126,9 +142,9 @@ class IConversationCard(TypedDict):
 
 
 LangCodeDescription = {
-    'es': 'Spanish',
-    'en': 'English',
-    'it': 'Italian',
-    'pt': 'Portuguese',
-    'fr': 'French',
-    }
+    "es": "Spanish",
+    "en": "English",
+    "it": "Italian",
+    "pt": "Portuguese",
+    "fr": "French",
+}

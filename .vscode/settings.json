@@ -1,14 +1,6 @@
 {
   "editor.formatOnSave": true,
-  "python.formatting.provider": "yapf",
-  "python.formatting.blackArgs": [
-    "--line-length",
-    "120"
-  ],
-  "python.linting.enabled": true,
-  "python.formatting.yapfArgs": [
-    "--style={based_on_style: google, column_limit: 120}"
-  ],
+  "pylint.enabled": true,
   "workbench.colorCustomizations": {
     "activityBar.activeBorder": "#44ff00",
     "activityBar.border": "#44ff00",
@@ -19,5 +11,12 @@
     "activityBarTop.inactiveForeground": "#44ff00",
     "activityBarTop.dropBorder": "#44ff00",
     "tab.activeBorderTop": "#44ff00"
+  },
+  "ruff.enable": true,
+  "ruff.organizeImports": true,
+  "ruff.fixAll": true,
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.formatOnSave": true,
   }
 }

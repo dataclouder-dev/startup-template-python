@@ -1,5 +1,8 @@
+# from app.core.app_enums import str
+# from app.core.exception import AppException
+# from resources.enviroment import environment as en
+import os
 from datetime import datetime
-from typing_extensions import Any, TypedDict
 
 # import mongo_schema
 import pymongo
@@ -7,33 +10,27 @@ from bson import ObjectId
 from pydantic import BaseModel
 from pymongo import MongoClient
 from pymongo.collection import Collection
-
-# from app.core.app_enums import str
-# from app.core.exception import AppException
-
-# from resources.enviroment import environment as en
-
-import os
+from typing_extensions import Any, TypedDict
 
 
 def get_mongo_uri():
     return f"mongodb+srv://{os.getenv('MONGO_USER')}:{os.getenv('MONGO_PASS')}@{os.getenv('MONGO_HOST')}/{os.getenv('MONGO_DB')}?retryWrites=true&w=majority"
+
 
 uri = get_mongo_uri()
 print("Connectando", uri)
 
 client = MongoClient(uri)
 
-db = client[os.getenv('MONGO_DB')]
-
+db = client[os.getenv("MONGO_DB")]
 
 
 class ArrayOperationData(TypedDict):
-    """ 
-    Con esta estructura puedo solucionar la mayoría de las operaciones de arreglos de un solo nivel. 
+    """
+    Con esta estructura puedo solucionar la mayoría de las operaciones de arreglos de un solo nivel.
 
 
-    Collection to find, las operaciones se permiten a 1 nivel es decir puedo afectar 
+    Collection to find, las operaciones se permiten a 1 nivel es decir puedo afectar
     user.verbs = [ {word: 'run'}, {word: 'walk'}] pero si cada objeto tiene más arreglos entonces hay que hacer otra clase
     CREATE requieres collection, document_id, array_property, value. UPDATE inner_object_property and inner_object_id
 
@@ -41,8 +38,9 @@ class ArrayOperationData(TypedDict):
     array_property: atributo donde se encuentra el arreglo a operar ej. verbs: user.verbs
     inner_object_property: propiedad del arreglo usado como identificador ej. word: user.verbs.word
     inner_object_id: valor del id usado para identificar comparar ej. life: user.verbs.word == 'life'
-    value: value to insert ej.  [tree, leaf]: user.verbs.word = [tree, leaf] 
+    value: value to insert ej.  [tree, leaf]: user.verbs.word = [tree, leaf]
     """
+
     collection: str
     document_id: str  # id del documento que contiene el arreglo a operar
     array_property: str  # renombrar a property_array
@@ -52,15 +50,15 @@ class ArrayOperationData(TypedDict):
 
 
 def get_all_data_in_collection(collection: str):
-    """ get all records for corresponding collection (No _id), USE CAREFULLY  """
+    """get all records for corresponding collection (No _id), USE CAREFULLY"""
     col = get_collection(collection)
-    projection = {'_id': 0}
+    projection = {"_id": 0}
     cursor = col.find({}, projection=projection)
-    return [doc for doc in cursor]
+    return list(cursor)
 
 
 def get_projection_dict(include: list[str] = None, exclude: list[str] = None) -> dict:
-    """ include: fields to include in a query, exclude: fields to exclude in a query """
+    """include: fields to include in a query, exclude: fields to exclude in a query"""
 
     selection = {}
 
@@ -82,95 +80,95 @@ def get_projection_dict(include: list[str] = None, exclude: list[str] = None) ->
 
 
 def get_document_by_id(collection, id: str) -> dict:
-    """ Get the data using custom id, similar to get document """
-    query = {'id': id}
+    """Get the data using custom id, similar to get document"""
+    query = {"id": id}
     return get_document_by_mongo_query(collection, query)
 
 
 def get_document_by_id_including(collection: str, id: str, include: list[str]) -> dict:
-    """ When your document/object contains more objects, and you only want specifics properties example, extract only verbs form user """
-    query = {'id': id}
+    """When your document/object contains more objects, and you only want specifics properties example, extract only verbs form user"""
+    query = {"id": id}
     selection = get_projection_dict(include, None)
     data = get_document_by_mongo_query(collection, query, selection)
     return data
 
 
 def get_document_by_object_id(collection: str, id: str) -> dict:
-    """ use mongo ObjectId version instead string this use mongo id property _id """
+    """use mongo ObjectId version instead string this use mongo id property _id"""
 
     mongo_col = get_collection(collection)
     document = mongo_col.find_one({"_id": ObjectId(id)})
     if document:
-        document['id'] = str(document['_id'])
-        del document['_id']
+        document["id"] = str(document["_id"])
+        del document["_id"]
     return document
 
 
-def get_document_by_mongo_query(collection: str, query: dict, projection: dict = {}) -> dict:
-    """ you may need to now how to query and project, for custom proposals """
+def get_document_by_mongo_query(collection: str, query: dict, projection: dict = None) -> dict:
+    """you may need to now how to query and project, for custom proposals"""
     """ basically a query with a dict, {'property1': property, 'property2': property2}, all queries exclude objectID aka _id """
 
-    projection = projection | {'_id': 0}
+    if projection is None:
+        projection = {}
+    projection = projection | {"_id": 0}
 
     col = get_collection(collection)
     data = col.find_one(query, projection)
     return data
 
 
-def get_documents_by_query_projection(collection: str,
-                                      query: dict,
-                                      projection: dict = {},
-                                      limit: int = None) -> list[Any]:
-    """ Get all documents with params, query: mongo query, selection: filters, limit: to limit the query, return a list  """
+def get_documents_by_query_projection(collection: str, query: dict, projection: dict = None, limit: int = None) -> list[Any]:
+    """Get all documents with params, query: mongo query, selection: filters, limit: to limit the query, return a list"""
 
+    if projection is None:
+        projection = {}
     table = get_collection(collection)
 
     # if projection is None:
-    projection = projection | {'_id': 0}
+    projection = projection | {"_id": 0}
 
     cursor = table.find(query, projection)
     if limit:
         cursor = cursor.limit(limit)
-    objects = [doc for doc in cursor]
-    return objects
+    return list(cursor)
 
 
 def save_document(collection: str, document: Any, manual_id=None, audit_user_id=None):
-    """ mongo agrega ids automaticamente, manual id para evitar este comportamiento"""
+    """mongo agrega ids automaticamente, manual id para evitar este comportamiento"""
     if isinstance(document, BaseModel):
         document = document.dict()
 
     # TODO: en realidad ya no creo trabajar con _id por que implica acutalizar con el ObjectId()
-    id_data = document.get('_id') or document.get('id')
+    id_data = document.get("_id") or document.get("id")
 
     if id_data:
         return update(collection, document, id_data, audit_user_id)
     else:
         if manual_id:
-            document['id'] = manual_id
+            document["id"] = manual_id
         return insert(collection, document, audit_user_id)
 
 
-def insert_pretty(collection: str, document: dict, audit_user_id: str= None) -> dict:
-    """ Insert a document with Object id '_id' and id string 'id', '_id' is not returned """
+def insert_pretty(collection: str, document: dict, audit_user_id: str = None) -> dict:
+    """Insert a document with Object id '_id' and id string 'id', '_id' is not returned"""
 
     if audit_user_id:
-        audit_data = {'createdDate': datetime.now(), 'createdBy': audit_user_id}
+        audit_data = {"createdDate": datetime.now(), "createdBy": audit_user_id}
         document = document | audit_data
 
-    document['_id'] = ObjectId()
-    document['id'] = str(document['_id'])
+    document["_id"] = ObjectId()
+    document["id"] = str(document["_id"])
 
     col = get_collection(collection)
     col.insert_one(document)
-    document.pop('_id', None)
+    document.pop("_id", None)
     return document
 
 
 # Es en teoria el mismo que insert_word_mongo pero más general
 def insert(table: str, document: dict, audit_user_id=None, cast_object_id=False):
     if audit_user_id:
-        audit_data = {'createdDate': datetime.now(), 'createdBy': audit_user_id}
+        audit_data = {"createdDate": datetime.now(), "createdBy": audit_user_id}
         document = document | audit_data
 
     col = get_collection(table)
@@ -178,25 +176,25 @@ def insert(table: str, document: dict, audit_user_id=None, cast_object_id=False)
         col.insert_one(document)
         # after save document, same saved dict is modified (mutable) adding _id: ObjectId
         if cast_object_id:
-            document['_id'] = str(document['_id'])
+            document["_id"] = str(document["_id"])
 
         return document
     except pymongo.errors.WriteError as exc:
-        print('.....Error', exc)
+        print(".....Error", exc)
         if exc.code == 121:
             __handle_invalid_data(col, document)
 
 
 def count_array(array_prop: str, col: str, id: str):
     collection = get_collection(col)
-    condition = {'$match': {'id': id}}
-    counter = {'$project': {'count': {'$size': f"${array_prop}"}}}
+    condition = {"$match": {"id": id}}
+    counter = {"$project": {"count": {"$size": f"${array_prop}"}}}
     a = collection.aggregate([condition, counter])
-    return [i for i in a]
+    return list(a)
 
 
 def delete_document(collection: str, document_id: str):
-    filters = {'id': document_id}
+    filters = {"id": document_id}
 
     mongo_col = get_collection(collection)
     data = mongo_col.delete_one(filters)
@@ -204,28 +202,28 @@ def delete_document(collection: str, document_id: str):
 
 
 def update(table: str, document: dict, id: str, audit_user_id: str = None, update_by_property=None) -> int:
-    """ Actualiza solo las propiedades que se envian $set, si  recibe  audit_user_id se guardan datos adicionales."""
+    """Actualiza solo las propiedades que se envian $set, si  recibe  audit_user_id se guardan datos adicionales."""
 
     if audit_user_id:
-        audit_data = {'modifiedDate': datetime.now(), 'modifiedBy': audit_user_id}
+        audit_data = {"modifiedDate": datetime.now(), "modifiedBy": audit_user_id}
         document = document | audit_data
 
     query = {}
     if update_by_property:
         query = {update_by_property: id}
     else:
-        query = {'id': id}
+        query = {"id": id}
 
     updated_data = {key: value for (key, value) in document.items() if value is not None}
 
-    updated_values = {'$set': updated_data}
+    updated_values = {"$set": updated_data}
     col = get_collection(table)
 
     try:
         result = col.update_one(query, updated_values)
-        return result.raw_result['nModified']
+        return result.raw_result["nModified"]
     except pymongo.errors.WriteError as exc:
-        print('.....Error', exc)
+        print(".....Error", exc)
         if exc.code == 121:
             __handle_invalid_data(col, document)
 
@@ -236,7 +234,7 @@ def update_with_operator(document_id: str, collection: str, update_operation: di
     :param collection:
     :param update: mongo update object built example: {'$set': {'recommendations.verbs': value}}
     """
-    filter = {'id': document_id}
+    filter = {"id": document_id}
     return update_with_filter_and_operation(filter, update_operation, collection)
 
 
@@ -253,26 +251,25 @@ def update_with_filter_and_operation(filter: dict, operation: dict, collection: 
 
 
 def insert_record_in_collection(table: str, record: dict) -> None:
-    print('inserting data', table, record)
+    print("inserting data", table, record)
     table = get_collection(table)
     table.insert_one(record)
 
 
 def get_collection(collection: str) -> Collection:
-    """ Get Mongo Collection Object"""
+    """Get Mongo Collection Object"""
     if isinstance(collection, str):
-        print(f'WARNING: not validated {collection} collection, pass it as Enum so it can be validated')
+        print(f"WARNING: not validated {collection} collection, pass it as Enum so it can be validated")
         return db[collection]
-    
+
     elif collection in str:
         return db[collection.value]
     else:
-        raise AppException('not able to find table in code',
-                           'Se intenta obtener una colleccion no registrada en el código')
+        raise Exception("not able to find table in code", "Se intenta obtener una colleccion no registrada en el código")
 
 
 def update_all_object(collection, id_name, id, object_dict):
-    """ Cuidado, cada valor pasado en el objecto lo va a actualizar, asegurarse de la construcción correcta """
+    """Cuidado, cada valor pasado en el objecto lo va a actualizar, asegurarse de la construcción correcta"""
 
     col = get_collection(collection)
     query = {id_name: id}
@@ -282,111 +279,112 @@ def update_all_object(collection, id_name, id, object_dict):
 
     for key, value in object_dict.items():
         if isinstance(value, list):
-            list_attibutes[key] = {'$each': value}
+            list_attibutes[key] = {"$each": value}
         else:
             attibutes[key] = value
 
     # TODO: Add the $set variable so it can set single properties
-    updated_values = {'$push': list_attibutes}
+    updated_values = {"$push": list_attibutes}
 
     result = col.update_one(query, updated_values)
-    return result.raw_result['nModified']
+    return result.raw_result["nModified"]
 
 
 def push_into_array(array_operation: ArrayOperationData):
     """Push data in the property value array i.e. { words: [...] }"""
 
-    collection = array_operation['collection']
-    document_id = array_operation['document_id']
-    array_property = array_operation['array_property']
-    value = array_operation['value']
+    collection = array_operation["collection"]
+    document_id = array_operation["document_id"]
+    array_property = array_operation["array_property"]
+    value = array_operation["value"]
 
-    filters = {'id': document_id}
-    push_update = {'$push': {array_property: value}}
+    filters = {"id": document_id}
+    push_update = {"$push": {array_property: value}}
     mongo_col = get_collection(collection)
     update_results = mongo_col.update_one(filters, push_update)
-    return update_results.raw_result['nModified']
+    return update_results.raw_result["nModified"]
 
 
 # Probar esto inserta multiples documentos en un arreglo  debería sustituir a
 def push_list_into_array(data: ArrayOperationData):
-    """ Similar to  push_into_array but when you want to  push multiple objects, data['value'] should be a list """
+    """Similar to  push_into_array but when you want to  push multiple objects, data['value'] should be a list"""
 
-    collection = data['collection']
-    array_property = data['array_property']
-    document_id = data['document_id']
-    records = data['value']
+    collection = data["collection"]
+    array_property = data["array_property"]
+    document_id = data["document_id"]
+    records = data["value"]
 
-    filters = {'id': document_id}
-    each = {'$each': records}
+    filters = {"id": document_id}
+    each = {"$each": records}
     update = {array_property: each}
-    push = {'$push': update}
+    push = {"$push": update}
 
     col = get_collection(collection)
     col.update_one(filters, push)
 
 
 def update_all_objects_in_array(data: ArrayOperationData):
-    """ Actualiza todos los objetos para agregar el valor que se requiere """
+    """Actualiza todos los objetos para agregar el valor que se requiere"""
     # TODO: quiza valga la pena una versión con filtro ya que actualiza la propiedad parejo
 
-    collection = data['collection']
-    array_property = data['array_property']
-    document_id = data['document_id']
-    value = data['value']
-    inner_object_property = data['inner_object_property']
+    collection = data["collection"]
+    array_property = data["array_property"]
+    document_id = data["document_id"]
+    value = data["value"]
+    inner_object_property = data["inner_object_property"]
 
-    filters = {'id': document_id}
-    update = {'$set': {f'{array_property}.$[].{inner_object_property}': value}}
+    filters = {"id": document_id}
+    update = {"$set": {f"{array_property}.$[].{inner_object_property}": value}}
 
     col = get_collection(collection)
     col.update_one(filter=filters, update=update)
+
 
 def update_object_in_array(data: ArrayOperationData):
-    ## revisar si funciona, y refactorizar ahora. el objeto  ArrayOperationData. 
+    ## revisar si funciona, y refactorizar ahora. el objeto  ArrayOperationData.
     # Crear el array frameworks con los scenarios para actualizar objects en un array
-    """ Actualiza un objeto en un arreglo, nota sobreescribe todo el objeto  """
-    collection = data['collection']
-    array_property = data['array_property']
-    document_id = data['document_id']
-    value = data['value']
-    inner_object_id = data['inner_object_id']
+    """Actualiza un objeto en un arreglo, nota sobreescribe todo el objeto"""
+    collection = data["collection"]
+    array_property = data["array_property"]
+    document_id = data["document_id"]
+    value = data["value"]
+    inner_object_id = data["inner_object_id"]
 
-    filters = {'id': document_id, f'{array_property}.id': inner_object_id}
-    update = {'$set': {array_property: value}}
+    filters = {"id": document_id, f"{array_property}.id": inner_object_id}
+    update = {"$set": {array_property: value}}
 
     col = get_collection(collection)
     col.update_one(filter=filters, update=update)
-
 
 
 def update_object_property_in_array(data: ArrayOperationData):
-    """ Ejemplo suponiendo que lesson tiene  { "id": 1, components: { [{id: 1, name: 'name'}, {id: 2, name: 'name2'}] } } 
-    y solo quiero actualizar name components[1] el de id 2, solo puede actualizar si el array property tiene id. """
-    
-    collection = data['collection']
-    array_property = data['array_property']
-    document_id = data['document_id']
-    value = data['value']
-    inner_object_property = data['inner_object_property']
-    inner_object_id = data['inner_object_id']
+    """Ejemplo suponiendo que lesson tiene  { "id": 1, components: { [{id: 1, name: 'name'}, {id: 2, name: 'name2'}] } }
+    y solo quiero actualizar name components[1] el de id 2, solo puede actualizar si el array property tiene id."""
 
-    filters = {'id': document_id, f'{array_property}.id': inner_object_id}
-    update = {'$set': {f'{array_property}.$.{inner_object_property}': value}}
+    collection = data["collection"]
+    array_property = data["array_property"]
+    document_id = data["document_id"]
+    value = data["value"]
+    inner_object_property = data["inner_object_property"]
+    inner_object_id = data["inner_object_id"]
+
+    filters = {"id": document_id, f"{array_property}.id": inner_object_id}
+    update = {"$set": {f"{array_property}.$.{inner_object_property}": value}}
 
     col = get_collection(collection)
     col.update_one(filter=filters, update=update)
 
+
 def push_into_array_sort_and_trim(data: ArrayOperationData, trim_number: int, sort_property):
-    collection = data['collection']
-    array_property = data['array_property']
-    document_id = data['document_id']
-    new_object = data['value']
+    collection = data["collection"]
+    array_property = data["array_property"]
+    document_id = data["document_id"]
+    new_object = data["value"]
 
-    filters = {'id': document_id}
+    filters = {"id": document_id}
 
-    rules = {'$each': [new_object], '$sort': {sort_property: -1}, '$slice': trim_number}
-    update = {'$push': {array_property: rules}}
+    rules = {"$each": [new_object], "$sort": {sort_property: -1}, "$slice": trim_number}
+    update = {"$push": {array_property: rules}}
 
     col = get_collection(collection)
 
@@ -395,31 +393,31 @@ def push_into_array_sort_and_trim(data: ArrayOperationData, trim_number: int, so
 
 # @deprecated probar si funciona igual con push_list_into_array
 def insert_objects_into_array(collection: str, id: str, property_array: str, records: list[Any]):
-    """ Insert documents/objects into existing array example { 'property_array' : [...records] } """
+    """Insert documents/objects into existing array example { 'property_array' : [...records] }"""
 
-    filters = {'id': id}
-    each = {'$each': records}
+    filters = {"id": id}
+    each = {"$each": records}
     update = {property_array: each}
-    push = {'$push': update}
+    push = {"$push": update}
     col = get_collection(collection)
     col.update_one(filters, push)
 
 
 def delete_from_array(array_operation: ArrayOperationData):
-    """ Deletes an existing object from array, property: using ArrayOperationData Object, note that there are 2 ids, 
+    """Deletes an existing object from array, property: using ArrayOperationData Object, note that there are 2 ids,
     one for collection document, and one for current value in the array, inner_object_id is the value to match,
-    example  array_property='words', inner_object_property='word', inner_object_id='forest'    {'words' { 'word' : 'forest' } } """
+    example  array_property='words', inner_object_property='word', inner_object_id='forest'    {'words' { 'word' : 'forest' } }"""
 
-    collection = array_operation['collection']
-    array_property = array_operation['array_property']
-    inner_object_property = array_operation.get('inner_object_property', 'id')
-    inner_object_id = array_operation['inner_object_id']
-    document_id = array_operation['document_id']
+    collection = array_operation["collection"]
+    array_property = array_operation["array_property"]
+    inner_object_property = array_operation.get("inner_object_property", "id")
+    inner_object_id = array_operation["inner_object_id"]
+    document_id = array_operation["document_id"]
 
     update = {array_property: {inner_object_property: inner_object_id}}
-    remove = {'$pull': update}
+    remove = {"$pull": update}
     mongo_col = get_collection(collection)
-    filters = {'id': document_id}
+    filters = {"id": document_id}
 
     mongo_col.update_one(filters, remove)
 
@@ -427,7 +425,7 @@ def delete_from_array(array_operation: ArrayOperationData):
 def __handle_invalid_data(col, document):
     # Get the schema for the collection
     opts = col.options()
-    schema = opts.get('validator').get('$jsonSchema')
+    schema = opts.get("validator").get("$jsonSchema")
 
     print("El eschema es .....", schema)
     # Raise a jsonschema.ValidationError with more details

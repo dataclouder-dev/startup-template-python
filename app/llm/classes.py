@@ -3,9 +3,10 @@ from typing import TypedDict
 
 
 class ChatRole(str, Enum):
-    Assistant = "assistant",
-    System = "system",
-    User = "user",
+    Assistant = ("assistant",)
+    System = ("system",)
+    User = ("user",)
+
 
 class ChatMessageDict(TypedDict):
     role: ChatRole

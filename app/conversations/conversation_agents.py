@@ -1,14 +1,17 @@
-from typing import List, Optional
-from pydantic import BaseModel
-from pydantic_ai import Agent
-# from app.conversations.conversation_models import CharacterCardData
-from app.conversations.conversations_classes import LangCodeDescription
 # from app.database.mongo import db
 import json
+from typing import List, Optional
+
+from pydantic import BaseModel
+from pydantic_ai import Agent
+
+# from app.conversations.conversation_models import CharacterCardData
+from app.conversations.conversations_classes import LangCodeDescription
 
 # data = db.get_collection('conversations').find_one()
 
-#NOTE GEMINI_API_KEY is in the .env file
+
+# NOTE GEMINI_API_KEY is in the .env file
 class CharacterCardData(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
@@ -23,8 +26,9 @@ class CharacterCardData(BaseModel):
     character_version: Optional[str] = None
     # extensions: Optional[Dict[str, Any]] = None
     appearance: Optional[str] = None
-    
-# NOTE: es mi primer agente, funciona pero creo que debería aprender a optimizarlo. 
+
+
+# NOTE: es mi primer agente, funciona pero creo que debería aprender a optimizarlo.
 async def translate_conversation(conversation_card: dict, current_lang: str, target_lang: str):
     current_data = json.dumps(conversation_card)
 
@@ -32,10 +36,10 @@ async def translate_conversation(conversation_card: dict, current_lang: str, tar
     target_lang_description = LangCodeDescription.get(target_lang)
 
     conv_translator_agent = Agent(
-        'gemini-1.5-pro',
+        "gemini-1.5-pro",
         result_type=CharacterCardData,
-        system_prompt='This is a character card for role playing, translate to the specified language all the attributes, return the same structure',  
+        system_prompt="This is a character card for role playing, translate to the specified language all the attributes, return the same structure",
     )
-    result = await conv_translator_agent.run(f'translate the character card to {target_lang_description}: ' + current_data)
+    result = await conv_translator_agent.run(f"translate the character card to {target_lang_description}: " + current_data)
 
     return result

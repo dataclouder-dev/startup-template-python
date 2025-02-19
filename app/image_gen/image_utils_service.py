@@ -1,4 +1,5 @@
 from io import BytesIO
+
 import requests
 from PIL import Image
 
@@ -10,6 +11,7 @@ def transform_to_webp_bytes(image_io: BytesIO) -> BytesIO:
     pil_image.save(img_webp_io, "webp")
     # pil_image.save("test.webp", "webp")
     return img_webp_io
+
 
 def download_image_to_memory(url) -> BytesIO:
     response = requests.get(url)

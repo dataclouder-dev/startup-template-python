@@ -110,3 +110,27 @@ poetry show : check dependencies
 docker build -t dc_python_server_image .
 
 docker run -it -p 8080:8080 dc_python_server_image
+
+
+### Developer Experience
+
+highly recommend this tools
+https://pypi.org/project/ruff/
+Ruff is a replacement for flake8, and linters and other formatters tools. settings are placed in pyproject.toml file.
+
+Install extention in vscode
+
+https://marketplace.visualstudio.com/items?itemName=charliermarsh.ruff
+
+Check documentation and rules 
+https://docs.astral.sh/ruff/
+
+Coomands 
+ruff check .
+ruff check --fix .
+ruff format .
+ruff check --fix --format .
+
+
+
+

@@ -1,6 +1,8 @@
-from pydantic import BaseModel, Field
-from typing import List, Optional, Dict, Any
 from datetime import datetime
+from typing import Any, List, Optional
+
+from pydantic import BaseModel, Field
+
 
 class CharacterCardData(BaseModel):
     name: Optional[str] = None
@@ -17,19 +19,23 @@ class CharacterCardData(BaseModel):
     # extensions: Optional[Dict[str, Any]] = None
     appearance: Optional[str] = None
 
+
 class CharacterCardDC(BaseModel):
-    spec: str = Field(default='chara_card_v2')
-    spec_version: str = Field(default='2_v_dc')
+    spec: str = Field(default="chara_card_v2")
+    spec_version: str = Field(default="2_v_dc")
     data: CharacterCardData
+
 
 class Assets(BaseModel):
     image: Any
+
 
 class TTS(BaseModel):
     voice: str
     secondaryVoice: str
     speed: str
     speedRate: float
+
 
 class MetaApp(BaseModel):
     isPublished: bool
@@ -39,6 +45,7 @@ class MetaApp(BaseModel):
     createdAt: datetime
     updatedAt: datetime
     takenCount: int
+
 
 class IConversationCard(BaseModel):
     version: str
@@ -52,6 +59,7 @@ class IConversationCard(BaseModel):
     lang: str
     tts: TTS
     metaApp: MetaApp
+
 
 class TranslationRequest(BaseModel):
     idCard: str
