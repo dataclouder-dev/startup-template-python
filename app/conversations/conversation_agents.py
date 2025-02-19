@@ -33,6 +33,7 @@ async def translate_conversation(conversation_card: dict, current_lang: str, tar
     current_data = json.dumps(conversation_card)
 
     current_lang_description = LangCodeDescription.get(current_lang)
+    print(current_lang_description)
     target_lang_description = LangCodeDescription.get(target_lang)
 
     conv_translator_agent = Agent(

@@ -19,6 +19,7 @@ help:
 
 # Run the FastAPI application in development mode
 start:
+	poetry run ruff check .
 	poetry run uvicorn app.main:app --reload
 
 	

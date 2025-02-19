@@ -3,7 +3,9 @@ import fal_client
 from app.image_gen import image_utils_service
 
 
-def generate_image(prompt: str, settings: dict = {}) -> str:
+def generate_image(prompt: str, settings: dict = None) -> str:
+    if settings is None:
+        settings = {}
     print("Generating image")
 
     if settings.get("resolution"):
@@ -29,7 +31,9 @@ def generate_image(prompt: str, settings: dict = {}) -> str:
     return url
 
 
-def generate_image_and_get_bytes(prompt: str, settings: dict = {}) -> bytes:
+def generate_image_and_get_bytes(prompt: str, settings: dict = None) -> bytes:
+    if settings is None:
+        settings = {}
     url = generate_image(prompt, settings)
     img_io = image_utils_service.download_image_to_memory(url)
     img_webp_io = image_utils_service.transform_to_webp_bytes(img_io)

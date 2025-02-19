@@ -60,7 +60,8 @@ class GeminiLLM:
         self.client = genai.GenerativeModel(self.model_name)
 
     def chat(self, messages: list[ChatMessageDict], return_tokens: bool = False, return_json: bool = False):
-        """Entender: no funciona como OpenAI, la conversación solo va uno y uno model y user, por eso en el primer model incluyo 2 partes, system promp y primer assistant interaction"""
+        """Entender: no funciona como OpenAI, la conversación solo va uno y uno model y user, por eso en el primer model incluyo 2 partes,
+        system promp y primer assistant interaction"""
         messages = transform_to_gemini(messages)
 
         # model = genai.GenerativeModel('gemini-1.0-pro-latest')
