@@ -253,15 +253,32 @@ fastapi = ">=0.100.0"
 pydantic-ai = ">=0.0.19"
 
 [[package]]
+name = "dataclouder-conversation-ai-cards"
+version = "0.0.9"
+description = "A library for managing AI conversations and character cards"
+optional = false
+python-versions = ">=3.11"
+groups = ["main"]
+files = [
+    {file = "dataclouder_conversation_ai_cards-0.0.9-py3-none-any.whl", hash = "sha256:8810fb4e9b9c60f0d46fa658bf9b25c35dcea7542be50ea77bb5b48469632bc4"},
+    {file = "dataclouder_conversation_ai_cards-0.0.9.tar.gz", hash = "sha256:e8ecf4e5b6a93b655a23447b3f6e6da70f8c1751278f4650cb7ee16ad39747ce"},
+]
+
+[package.dependencies]
+dataclouder-core = ">=0.0.1"
+fastapi = ">=0.100.0"
+pydantic-ai = ">=0.0.19"
+
+[[package]]
 name = "dataclouder-core"
-version = "0.0.4"
+version = "0.0.5"
 description = "A library Core for dataclouder projects"
 optional = false
 python-versions = ">=3.11"
 groups = ["main"]
 files = [
-    {file = "dataclouder_core-0.0.4-py3-none-any.whl", hash = "sha256:f85e6aefc06626027fad4ff0f61e1baebfeb3429fccf20df1bca5dcb4332e095"},
-    {file = "dataclouder_core-0.0.4.tar.gz", hash = "sha256:a976b91bb9c0310466a8b87dc9cf3a797da093dc2a0f304675c4b3e11ec2192b"},
+    {file = "dataclouder_core-0.0.5-py3-none-any.whl", hash = "sha256:ee485ec0e7a7ea8b2e78bf9b4aa88f3557e95e297287f4c9538570e040ca7580"},
+    {file = "dataclouder_core-0.0.5.tar.gz", hash = "sha256:2d7f4cb269653ee3fca6936a25224ce2338fce6439740f47d7d680e2450d69c8"},
 ]
 
 [package.dependencies]
@@ -2556,5 +2573,5 @@ files = [
 
 [metadata]
 lock-version = "2.1"
-python-versions = "^3.11"
-content-hash = "3b3e09e4b56e7f54adc8d819835819855e3975502dc6c130a0ec6c0bccde93ce"
+python-versions = "^3.12"
+content-hash = "4443230b0331a7c89b4b005f405fa37621a7168d5dd23a81a09563b36595ac8f"

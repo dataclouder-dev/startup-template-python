@@ -20,14 +20,18 @@ pillow = "^11.1.0"
 pydantic-ai = "^0.0.24"
 dataclouder-tts = "^0.0.6"
 pymongo = "^4.10.1"
-dataclouder-core = "^0.0.4"
+dataclouder-core = "^0.0.5"
 dataclouder-agent-cards = "^0.0.12"
+dataclouder-conversation-ai-cards = "^0.0.9"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.9.6"
 
 [tool.ruff]
 line-length = 180
+fix = true  # Enable auto-fixing
+unsafe-fixes = false  # Enable unsafe fixes
+
 
 [tool.ruff.lint]
 select = [

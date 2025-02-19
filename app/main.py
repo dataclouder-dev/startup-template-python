@@ -7,6 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 
+from app.generics.controller import generic_controller
 from app.image_gen import image_gen
 from app.llm import llm_router
 from app.modules.mongo import mongo_controller
@@ -32,7 +33,7 @@ app.include_router(image_gen.router)
 app.include_router(llm_router.router)
 app.include_router(mongo_controller.router)
 app.include_router(agent_controller.router)
-
+app.include_router(generic_controller.router)
 app.include_router(tts_controller.router)
 
 
