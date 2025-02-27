@@ -13,7 +13,7 @@ import tempfile
 import yt_dlp
 
 
-def download_youtube_audio_to_memory(url) -> tuple[io.BytesIO, str, dict]:
+def download_youtube_audio_to_memory(url: str) -> tuple[io.BytesIO, str, dict]:
     """
     Download audio from a YouTube video using yt-dlp and return as BytesIO object
 

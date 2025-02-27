@@ -3,7 +3,7 @@ import subprocess
 
 
 # Note: this works but i think i can't send 3 multiple request or ill be blocked.
-def download_tiktok(url, output_filename="tik1.mp4"):
+def download_tiktok(url: str, output_filename: str = "tik1.mp4") -> None:
     """
     Download a TikTok video using yt-dlp with additional parameters to avoid blocking
 

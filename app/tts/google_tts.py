@@ -15,7 +15,7 @@ class VoiceSetttings(TypedDict):
     pitch: float
 
 
-def get_speech(text: str, voice_name: VoiceCode = None, options: SynthAudioOptions = None, lang="en", is_ssml=False) -> tuple[bytes, str]:
+def get_speech(text: str, voice_name: VoiceCode | None = None, options: SynthAudioOptions | None = None, lang: str = "en", is_ssml: bool = False) -> tuple[bytes, str]:
     # print('Voice options:', voice_options    language_code = 'en-US' # default
     print("Voice name:", voice_name, "Options:", options, "Lang:", lang, "is_ssml:", is_ssml)
 
@@ -76,7 +76,7 @@ def get_speed_rate(speed: AudioSpeed) -> float:
     return speaking_rate
 
 
-def list_voices(language_code="en-US"):
+def list_voices(language_code: str = "en-US") -> list[dict]:
     client = texttospeech.TextToSpeechClient()
 
     response = client.list_voices(language_code=language_code)
@@ -91,7 +91,7 @@ def list_voices(language_code="en-US"):
         print(f"{languages:<8} | {name:<24} | {gender:<8} | {rate:,} Hz")
 
 
-def text_to_wav(voice_name: str, text: str):
+def text_to_wav(voice_name: str, text: str) -> tuple[bytes, str]:
     language_code = "-".join(voice_name.split("-")[:2])
     text_input = texttospeech.SynthesisInput(text=text)
     voice_params = texttospeech.VoiceSelectionParams(language_code=language_code, name=voice_name)

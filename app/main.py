@@ -40,17 +40,17 @@ app.include_router(video_analizer_controller.router)
 
 
 @app.get("/", response_class=HTMLResponse)
-def read_root():
+def read_root() -> str:
     return "<h1>welcome</h1> <br> <a href='/docs'>docs</a>"
 
 
 @app.get("/items/{item_id}")
-def read_item(item_id: int, q: str = None):
+def read_item(item_id: int, q: str | None = None) -> dict:
     return {"item_id": item_id, "q": q}
 
 
 @app.get("/vars")
-def read_vars():
+def read_vars() -> tuple[str, str]:
     print(os.getenv("ENV"))
     print(os.getenv("VERSION"))
     return os.getenv("ENV"), os.getenv("VERSION")

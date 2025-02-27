@@ -11,7 +11,7 @@ router = APIRouter(prefix="/api/llm", tags=["ai"])
 
 
 @router.get("/chat/")
-async def get_simple_llm_request(request: str):
+async def get_simple_llm_request(request: str) -> dict:
     print("do something", request)
     model = gemini_service.GeminiLLM(model_name="models/gemini-1.5-flash")
     return model.complete(request)

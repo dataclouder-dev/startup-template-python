@@ -5,7 +5,7 @@ from pathlib import Path
 from dotenv import dotenv_values
 
 
-def parse_env_file(env_file_path=None):
+def parse_env_file(env_file_path: str | None = None) -> None:
     # If no path provided, use default '../.env' relative to script location
     if env_file_path is None:
         script_dir = Path(__file__).parent

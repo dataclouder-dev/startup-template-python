@@ -13,7 +13,7 @@ def transform_to_webp_bytes(image_io: BytesIO) -> BytesIO:
     return img_webp_io
 
 
-def download_image_to_memory(url) -> BytesIO:
+def download_image_to_memory(url: str) -> BytesIO:
     response = requests.get(url)
     response.raise_for_status()  # Raise an exception if the request was unsuccessful
 

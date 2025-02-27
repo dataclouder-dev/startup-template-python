@@ -1,6 +1,7 @@
+# Delete this
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Set, TypedDict, Union
+from typing import Any, Optional, TypedDict, Union
 
 
 class Message(TypedDict):
@@ -23,8 +24,8 @@ class ChatMultiMessage(TypedDict):
     audioPromise: Any
     isLoading: Optional[bool]
     transcription: Optional[Any]
-    transcriptionTimestamps: Optional[List["WordTimestamps"]]
-    tag: Union[str, List[str], Set[str], Dict[str, Any]]
+    transcriptionTimestamps: Optional[list["WordTimestamps"]]
+    tag: Union[str, list[str], set[str], dict[str, Any]]
 
 
 class TranscriptionsWhisper(TypedDict):
@@ -58,9 +59,9 @@ class ChatMessage(TypedDict):
     audioHtml: Optional[Any]  # HTMLAudioElement equivalent
     promisePlay: Optional[Any]
     stats: Optional[Any]
-    multiMessages: Optional[List[ChatMultiMessage]]
+    multiMessages: Optional[list[ChatMultiMessage]]
     transcription: Optional[TranscriptionsWhisper]
-    transcriptionTimestamps: Optional[List[WordTimestamps]]
+    transcriptionTimestamps: Optional[list[WordTimestamps]]
     voice: Optional[str]
 
 
@@ -78,12 +79,12 @@ class CharacterCardDCData(TypedDict):
     first_mes: str
     creator_notes: str
     mes_example: str
-    alternate_greetings: List[str]
-    tags: List[str]
+    alternate_greetings: list[str]
+    tags: list[str]
     system_prompt: str
     post_history_instructions: str
     character_version: str
-    extensions: Dict[str, Any]
+    extensions: dict[str, Any]
     appearance: Appearance
 
 

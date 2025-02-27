@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, List, Optional
+from typing import Any, Optional
 
 from pydantic import BaseModel, Field
 
@@ -11,8 +11,8 @@ class CharacterCardData(BaseModel):
     first_mes: Optional[str] = None
     creator_notes: Optional[str] = None
     mes_example: Optional[str] = None
-    alternate_greetings: Optional[List[str]] = None
-    tags: Optional[List[str]] = None
+    alternate_greetings: Optional[list[str]] = None
+    tags: Optional[list[str]] = None
     system_prompt: Optional[str] = None
     post_history_instructions: Optional[str] = None
     character_version: Optional[str] = None

@@ -9,7 +9,7 @@ router = APIRouter(prefix="/api/tts", tags=["ai"])
 
 
 @router.get("/synth/")
-async def get_simple_llm_request(request: str):
+async def get_simple_llm_request(request: str) -> dict:
     print("do something ", request)
 
     data = google_tts.get_speech("  hello world can you hear me?", lang="en", is_ssml=False)

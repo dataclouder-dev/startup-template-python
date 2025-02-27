@@ -9,7 +9,7 @@ router = APIRouter(prefix="/api/image", tags=["ai"])
 
 
 @router.get("/generate/")
-async def get_simple_llm_request(request: str):
+async def get_simple_llm_request(request: str) -> dict:
     print("do something", request)
 
     return {"word": request}

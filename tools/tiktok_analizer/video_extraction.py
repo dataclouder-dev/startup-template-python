@@ -4,8 +4,10 @@ import cv2
 import numpy as np
 from moviepy.video.io.VideoFileClip import VideoFileClip
 
+MAX_FRAME_DIFF = 135
 
-def extract_frames(video_path, output_dir="output"):
+
+def extract_frames(video_path: str, output_dir: str = "output") -> int:
     """Extract frames from video and save key frames
     Parameters:
         video_path (str): Path to the video file
@@ -28,7 +30,7 @@ def extract_frames(video_path, output_dir="output"):
         # Save frame if it's significantly different from previous frame
         if prev_frame is not None:
             diff = np.mean(np.abs(frame - prev_frame))
-            if diff > 135:  # Threshold for scene change
+            if diff > MAX_FRAME_DIFF:  # Threshold for scene change
                 frame_path = f"{output_dir}/frame_{frame_count:04d}.jpg"
                 cv2.imwrite(frame_path, frame)
                 frame_exported_count = frame_exported_count + 1
@@ -40,7 +42,7 @@ def extract_frames(video_path, output_dir="output"):
     return frame_count
 
 
-def extract_audio(video_path, output_dir="output") -> str:
+def extract_audio(video_path: str, output_dir: str = "output") -> str:
     """Extract audio from video and save as WAV with reduced size
     Parameters:
         video_path (str): Path to the video file
@@ -71,7 +73,7 @@ def extract_audio(video_path, output_dir="output") -> str:
     return audio_path
 
 
-def analyze_video(video_path, output_dir="output"):
+def analyze_video(video_path: str, output_dir: str = "output") -> dict:
     """
     Analyze video file: extract frames, audio, and generate transcription
     Parameters:

@@ -2,14 +2,14 @@ import json
 import logging
 import os
 from pathlib import Path
-from typing import Dict, List, Union
+from typing import Union
 
 import requests
 
 from app.modules.mongo.mongo import db
 
 
-def log_retry(url: str):
+def log_retry(url: str) -> None:
     """Log URL to retry.txt when rate limit is triggered"""
     print("Logging retry")
     with open("retry.txt", "a") as f:
@@ -128,7 +128,7 @@ def remove_from_retry(url: str) -> None:
         if not os.path.exists("retry.txt"):
             return
 
-        with open("retry.txt", "r") as f:
+        with open("retry.txt") as f:
             urls = f.read().splitlines()
 
         urls = [u for u in urls if u != url]
@@ -139,7 +139,7 @@ def remove_from_retry(url: str) -> None:
         logging.error(f"Error removing URL from retry file: {e}")
 
 
-async def download_media(data: Dict[str, Union[str, List[str]]], folder: str = "downloads") -> None:
+async def download_media(data: dict[str, Union[str, list[str]]], folder: str = "downloads") -> None:
     """
     Download media (video or slideshow) to the downloads directory
 
@@ -211,7 +211,7 @@ async def download_media(data: Dict[str, Union[str, List[str]]], folder: str = "
         raise
 
 
-def save_in_db(data: dict):
+def save_in_db(data: dict) -> str | None:
     """
     Save media information to the database
 

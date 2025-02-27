@@ -16,13 +16,13 @@ router = APIRouter(prefix="/api/video-analizer", tags=["Video Analizer"])
 
 @router.get("/")
 @handler_exception
-async def greet() -> Any:
+async def greet() -> dict:
     return {"hi", "hello"}
 
 
 @router.post("/")
 @handler_exception
-async def start_analysis(video: VideoAnalysisModel):
+async def start_analysis(video: VideoAnalysisModel) -> dict:
     print("starting video analisis of", video)
     result = await video_analizer_service.analize_video(video.url)
     print(result)
@@ -32,7 +32,7 @@ async def start_analysis(video: VideoAnalysisModel):
 
 @router.post("/extract-tiktok-data")
 @handler_exception
-async def save_tiktok_data(video: dict):
+async def save_tiktok_data(video: dict) -> dict:
     print("starting video analisis of", video)
     result = await video_analizer_service.save_tiktok_data(video["urls"])
     print(result)
@@ -42,7 +42,7 @@ async def save_tiktok_data(video: dict):
 
 @router.post("/query")
 @handler_exception
-async def find_filtered_generics(filters: FiltersConfig):
+async def find_filtered_generics(filters: FiltersConfig) -> list[Any]:
     print(filters)
     generic = generic_service.find_filtered_generics(filters)
     return generic
@@ -50,7 +50,7 @@ async def find_filtered_generics(filters: FiltersConfig):
 
 @router.post("/download-audio")
 @handler_exception
-async def download_audio(video: VideoAnalysisModel):
+async def download_audio(video: VideoAnalysisModel) -> StreamingResponse:
     print("starting video analisis of", video)
     byte, filename, info = await yt_downloads.download_youtube_audio_to_memory(video.url)
 

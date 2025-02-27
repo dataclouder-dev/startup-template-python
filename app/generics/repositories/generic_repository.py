@@ -1,5 +1,3 @@
-from typing import Any
-
 from bson import ObjectId
 from dataclouder_core.models.models import FiltersConfig
 
@@ -9,7 +7,7 @@ from app.modules.mongo.mongo import db
 col_name = "generics"
 
 
-def find_generics(id: str) -> Any:
+def find_generics(id: str) -> dict:
     """Get words"""
     collection = db[col_name]
     result = collection.find_one({"_id": ObjectId(id)})
@@ -17,7 +15,7 @@ def find_generics(id: str) -> Any:
     return result
 
 
-def find_filtered_generics(filters: FiltersConfig) -> Any:
+def find_filtered_generics(filters: FiltersConfig) -> list:
     """Get words"""
     print(filters)
     collection = db[col_name]

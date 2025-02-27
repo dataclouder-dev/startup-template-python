@@ -1,6 +1,6 @@
 # from app.database.mongo import db
 import json
-from typing import List, Optional
+from typing import Optional
 
 from pydantic import BaseModel
 from pydantic_ai import Agent
@@ -19,8 +19,8 @@ class CharacterCardData(BaseModel):
     first_mes: Optional[str] = None
     creator_notes: Optional[str] = None
     mes_example: Optional[str] = None
-    alternate_greetings: Optional[List[str]] = None
-    tags: Optional[List[str]] = None
+    alternate_greetings: Optional[list[str]] = None
+    tags: Optional[list[str]] = None
     system_prompt: Optional[str] = None
     post_history_instructions: Optional[str] = None
     character_version: Optional[str] = None
@@ -29,7 +29,7 @@ class CharacterCardData(BaseModel):
 
 
 # NOTE: es mi primer agente, funciona pero creo que debería aprender a optimizarlo.
-async def translate_conversation(conversation_card: dict, current_lang: str, target_lang: str):
+async def translate_conversation(conversation_card: dict, current_lang: str, target_lang: str) -> CharacterCardData:
     current_data = json.dumps(conversation_card)
 
     current_lang_description = LangCodeDescription.get(current_lang)

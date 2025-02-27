@@ -6,12 +6,12 @@ from tools.tiktok_analizer import tiktok_downloader, video_extraction
 from tools.whisper import groq_whisper
 
 
-async def analize_video(url: str):
+async def analize_video(url: str) -> None:
     await download_video(url)
     print(url)
 
 
-async def save_tiktok_data(urls: list[str]):
+async def save_tiktok_data(urls: list[str]) -> None:
     for url in urls:
         print("* Getting data from video", url)
         username, video_id = extract_tiktok_url_components(url)
@@ -21,7 +21,7 @@ async def save_tiktok_data(urls: list[str]):
         print("saved tiktok data", saved_id)
 
 
-async def download_video(url: str):
+async def download_video(url: str) -> None:
     result = await tiktok_downloader.get_video(url)
 
     if result is None:

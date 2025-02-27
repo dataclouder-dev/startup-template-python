@@ -8,6 +8,6 @@ router = APIRouter()
 
 
 @router.get("/api/mongo/get_all_data_in_collection", tags=["Mongo"])
-async def get_all_data_in_collection(collection: str):
+async def get_all_data_in_collection(collection: str) -> list[dict]:
     data = mongo.get_documents_by_query_projection(collection, {}, {})
     return data

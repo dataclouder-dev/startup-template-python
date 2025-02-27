@@ -23,7 +23,7 @@ def upload_bytes_to_ref_0(path: str, file: bytes) -> ImageFile:
     return result
 
 
-def upload_bytes_to_ref(path: str, file: bytes, metadata=None) -> StorageFile:
+def upload_bytes_to_ref(path: str, file: bytes, metadata: dict | None = None) -> StorageFile:
     bucket_name = f"{environment.project_id}.appspot.com"
     bucket = storage_client.get_bucket(bucket_name)
 
@@ -37,7 +37,7 @@ def upload_bytes_to_ref(path: str, file: bytes, metadata=None) -> StorageFile:
     return StorageFile(bucket=bucket_name, path=blob.name, url=blob.public_url)
 
 
-def get_storage_path(lang: str, entity_path: str, entity_id: str, file_type: str, file_name: str, extension: str = "") -> str:
+def get_storage_path(lang: str, entity_path: str, entity_id: str, file_type: str, file_name: str, extension: str | None = None) -> str:  # noqa: PLR0913
     file_name = file_name.replace(" ", "")[:20]
     now = int(time())
     file_name = f"{file_name}_{now}"

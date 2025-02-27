@@ -11,8 +11,8 @@ api_key = os.environ["GEMINI_API_KEY"]
 genai.configure(api_key=api_key)
 
 
-def transform_to_gemini(messages_chatgpt: list[ChatMessageDict]):
-    messages_gemini = []
+def transform_to_gemini(messages_chatgpt: list[ChatMessageDict]) -> list[dict]:
+    messages_gemini: list[dict] = []
     system_promt = ""
     for message in messages_chatgpt:
         if message["role"] == "system":
@@ -29,7 +29,7 @@ def transform_to_gemini(messages_chatgpt: list[ChatMessageDict]):
     return messages_gemini
 
 
-def get_models():
+def get_models() -> list[dict]:
     results = []
     for m in genai.list_models():
         if "generateContent" in m.supported_generation_methods:
@@ -53,13 +53,13 @@ class GeminiLLM:
 
     client = None
 
-    def __init__(self, model_name="models/gemini-1.5-flash"):
+    def __init__(self, model_name: str = "models/gemini-1.5-flash") -> None:
         # self.model_name = model_name if model_name in ['models/gemini-1.5-flash', 'models/gemini-1.5-pro'] else 'models/gemini-1.5-flash'
         self.model_name = model_name or "models/gemini-1.5-flash"
         print("Creating with model ", self.model_name)
         self.client = genai.GenerativeModel(self.model_name)
 
-    def chat(self, messages: list[ChatMessageDict], return_tokens: bool = False, return_json: bool = False):
+    def chat(self, messages: list[ChatMessageDict], return_tokens: bool = False, return_json: bool = False) -> str:
         """Entender: no funciona como OpenAI, la conversación solo va uno y uno model y user, por eso en el primer model incluyo 2 partes,
         system promp y primer assistant interaction"""
         messages = transform_to_gemini(messages)
@@ -79,7 +79,7 @@ class GeminiLLM:
 
         return response.text
 
-    def complete(self, message: str, return_json: bool = False):
+    def complete(self, message: str, return_json: bool = False) -> str:
         # messages = transform_to_gemini(messages)
         safety_settings = {
             HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_ONLY_HIGH,

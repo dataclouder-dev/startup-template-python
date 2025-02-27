@@ -46,7 +46,30 @@ select = [
     "I",  # isort
     "C",  # flake8-comprehensions
     "B",  # flake8-bugbear
+    "PYI", # pyright static type checker
+    "UP", # pyupgrade
+    "I", # isort
+    "PL", # pylint
+    "PLC",
+    "PLW",
+    "PLE",
+    "PLC",
+    "ANN",
+    "FAST", 
+    "TCH"
+    ]
+
+ignore = ["TC004", "TC002"]  # Add this line
+
+
+[tool.ruff.lint.extend-per-file-ignores]
+"*.ipynb" = [
+    "E402",  "E501", "W293", "W291", "B007", "B006", "B018",
+    "F841", "F821", "W191", "TC001", "ANN201", "ANN001", "ANN204", "ANN401",
+    "UP006", "UP035", "SIM115", "SIM118", "PLR0913" , "PLR2004" , "PLR2004" , "PLW2901", "I001", "ANN202"
 ]
+
+
 
 [build-system]
 requires = ["poetry-core"]
