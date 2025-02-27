@@ -1,0 +1,15 @@
+name: video-analysis3
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.12
+  - pip
+  - poetry>=1.7.0
+  - opencv
+  - numpy>=2.2.3
+  - jupyter
+  - ipykernel
+  - moviepy
+  - pillow 
+  - yt-dlp

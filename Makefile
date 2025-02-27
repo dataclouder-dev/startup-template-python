@@ -42,7 +42,7 @@ gcp-build:
 	gcloud config set project $(PROJECT_ID)
 	gcloud builds submit --tag gcr.io/$(PROJECT_ID)/$(IMAGE_NAME) .
 
-gcp-deploy:
+gcp-deploy-service:
 	@echo "-> Deploying Lastest Build $(PROJECT_ID)/$(IMAGE_NAME) to Google Cloud Run... "
 	@ENV_VARS=$$(python3 scripts/env-parser.py); \
 	echo "Environment Variables to be deployed:"; \
@@ -57,9 +57,9 @@ gcp-deploy:
 
 
 
-gcp-build-deploy: 
+deploy: 
 	make gcp-build
-	make gcp-deploy
+	make gcp-deploy-service
 
 # 🚢 Docker Scripts
 

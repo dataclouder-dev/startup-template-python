@@ -10,7 +10,15 @@
     "activityBar.activeFocusBorder": "#44ff00",
     "activityBarTop.inactiveForeground": "#44ff00",
     "activityBarTop.dropBorder": "#44ff00",
-    "tab.activeBorderTop": "#44ff00"
+    "tab.activeBorderTop": "#44ff00",
+
+    "panel.border": "#44ff00",
+    "tab.border": "#44ff00",
+    "editorGroupHeader.border": "#44ff00",
+    "scrollbarSlider.background": "#44ff0040",
+    "scrollbarSlider.activeBackground": "#44ff00cc",
+    "scrollbar.shadow": "#44ff006e"
+    
   },
   "ruff.enable": true,
   "ruff.organizeImports": true,

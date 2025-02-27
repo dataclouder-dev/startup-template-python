@@ -1,0 +1,125 @@
+{
+    aweme_id: "7362685720835788038",
+    desc: "Curva del olvido, como estudiar mejor, vocabulario en inglés, aprender a aprender y a estudiar también, refuerza con la app.#memoria #curvadelolvido #ingles #estudiar ",
+    create_time: 1714258860,
+    author: {
+    uid: "7071891350971925509",
+    short_id: "0",
+    nickname: "Polilan",
+    signature: "🦩Micro-aprendizaje de idiomas en cada publicación + una app de idiomas bien pro",
+    avatar_thumb: {
+    uri: "tos-maliva-avt-0068/e6e088b58c9cac550b049a30ff1bac77",
+    url_list: [
+    "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/e6e088b58c9cac550b049a30ff1bac77~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&nonce=59453&refresh_token=669e7a53a3e90b6fe4cbf3b52d23e1fb&x-expires=1740636000&x-signature=MFt12%2FZT3%2BbWS5mB2TPA3pNJe0Q%3D&idc=sg1&ps=13740610&shcp=d05b14bd&shp=45126217&t=4d5b0474",
+    "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/e6e088b58c9cac550b049a30ff1bac77~tplv-tiktokx-cropcenter:100:100.jpeg?dr=14579&nonce=55615&refresh_token=36c29b5cc1c31cd603c6985bbf366d0a&x-expires=1740636000&x-signature=pLvbUZQhC%2BUNT0n%2BAy7CUfPOSsY%3D&idc=sg1&ps=13740610&shcp=d05b14bd&shp=45126217&t=4d5b0474"
+    ],
+    width: 720,
+    height: 720,
+    url_prefix: null
+    },
+    avatar_medium: {
+    uri: "tos-maliva-avt-0068/e6e088b58c9cac550b049a30ff1bac77",
+    url_list: [
+    "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/e6e088b58c9cac550b049a30ff1bac77~tplv-tiktokx-cropcenter:720:720.webp?dr=14579&nonce=42059&refresh_token=b6876dda8cb924dc034a988023aed78f&x-expires=1740636000&x-signature=C8cLx2pM%2B6Jjh8sOYLTdGXH0QdE%3D&idc=sg1&ps=13740610&shcp=d05b14bd&shp=45126217&t=4d5b0474",
+    "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/e6e088b58c9cac550b049a30ff1bac77~tplv-tiktokx-cropcenter:720:720.jpeg?dr=14579&nonce=90670&refresh_token=284004f2fb99a1fe3db22bba433ba14b&x-expires=1740636000&x-signature=VmZMarL1TtdNy0kGeMWAa%2BnBssM%3D&idc=sg1&ps=13740610&shcp=d05b14bd&shp=45126217&t=4d5b0474"
+    ],
+    width: 720,
+    height: 720,
+    url_prefix: null
+    },
+    follow_status: 0,
+    is_block: false,
+    custom_verify: "",
+    unique_id: "polilan_app",
+    room_id: 0,
+    authority_status: 0,
+    verify_info: "",
+    share_info: {
+    share_url: "",
+    share_desc: "",
+    share_title: "",
+    share_qrcode_url: {
+    uri: "",
+    url_list: [ ],
+    width: 720,
+    height: 720,
+    url_prefix: null
+    },
+    share_title_myself: "",
+    share_title_other: "",
+    share_desc_info: "",
+    now_invitation_card_image_urls: null
+    },
+    with_commerce_entry: false,
+    verification_type: 1,
+    enterprise_verify_reason: "",
+    is_ad_fake: false,
+    followers_detail: null,
+    region: "MX",
+    commerce_user_level: 0,
+    platform_sync_info: null,
+    is_discipline_member: false,
+    secret: 0,
+    prevent_download: false,
+    geofencing: null,
+    video_icon: {
+    uri: "",
+    url_list: [ ],
+    width: 720,
+    height: 720,
+    url_prefix: null
+    },
+    follower_status: 0,
+    comment_setting: 0,
+    duet_setting: 0,
+    download_setting: 3,
+    cover_url: [ ],
+    language: "es",
+    item_list: null,
+    is_star: false,
+    type_label: [ ],
+    ad_cover_url: null,
+    comment_filter_status: 0,
+    avatar_168x168: {
+    uri: "tos-maliva-avt-0068/e6e088b58c9cac550b049a30ff1bac77",
+    url_list: [
+    "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/e6e088b58c9cac550b049a30ff1bac77~tplv-tiktokx-cropcenter:168:168.webp?dr=14577&nonce=38911&refresh_token=4ac318f0a3d6e643abceb9618c322417&x-expires=1740636000&x-signature=ooFnXF0k6RRyp%2FTgh156CPqKIHM%3D&idc=sg1&ps=13740610&shcp=d05b14bd&shp=45126217&t=4d5b0474",
+    "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/e6e088b58c9cac550b049a30ff1bac77~tplv-tiktokx-cropcenter:168:168.jpeg?dr=14577&nonce=8323&refresh_token=0b094b63d489dec4f843421e0084e07c&x-expires=1740636000&x-signature=B3GWRVacYpCc8eHNzBG2n%2FMytwE%3D&idc=sg1&ps=13740610&shcp=d05b14bd&shp=45126217&t=4d5b0474"
+    ],
+    width: 720,
+    height: 720,
+    url_prefix: null
+    },
+    avatar_300x300: {
+    uri: "tos-maliva-avt-0068/e6e088b58c9cac550b049a30ff1bac77",
+    url_list: [
+    "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/e6e088b58c9cac550b049a30ff1bac77~tplv-tiktokx-cropcenter:300:300.webp?dr=14577&nonce=87106&refresh_token=57e235d2c7522ac5ff39334946f5e54d&x-expires=1740636000&x-signature=gM33vCQ4uvCNU1VkAKBk5yruDhI%3D&idc=sg1&ps=13740610&shcp=d05b14bd&shp=45126217&t=4d5b0474",
+    "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/e6e088b58c9cac550b049a30ff1bac77~tplv-tiktokx-cropcenter:300:300.jpeg?dr=14577&nonce=82094&refresh_token=8568ae8a62cbef51f7ee63ec055eed3b&x-expires=1740636000&x-signature=%2FLX8ncKhhDC%2BoBNmSLSWyej3i8A%3D&idc=sg1&ps=13740610&shcp=d05b14bd&shp=45126217&t=4d5b0474"
+    ],
+    width: 720,
+    height: 720,
+    url_prefix: null
+    },
+    relative_users: null,
+    cha_list: null,
+    sec_uid: "MS4wLjABAAAA4DoVOn_rnrtDKBxl3275zsZxvuS1AlxURpwmDgA2Q_eMjo2ARK2SHL9CR2bp-QJ-",
+    need_points: null,
+    homepage_bottom_toast: null,
+    can_set_geofencing: null,
+    white_cover_url: null,
+    user_tags: null,
+    bold_fields: null,
+    search_highlight: null,
+    mutual_relation_avatars: null,
+    events: null,
+    matched_friend: {
+    video_items: null,
+    repost_items: null
+    },
+    advance_feature_item_order: null,
+    advanced_feature_info: null,
+    user_profile_guide: null,
+    shield_edit_field_info: null,
+    can_message_follow_status_list: null,
+    account_labels: null
+    },
