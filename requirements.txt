@@ -8,3 +8,4 @@ fal-client==0.5.6   # to generate image with this client
 pillow==10.3.0      # to help image manipulation
 pydantic-ai==0.0.19
 dataclouder-conversation-ai-cards==0.0.4
+dataclouder-mongo==0.0.3  # MongoDB utilities

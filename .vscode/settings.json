@@ -15,7 +15,9 @@
     "editorGroupHeader.border": "#44ff00",
     "scrollbarSlider.background": "#44ff0040",
     "scrollbarSlider.activeBackground": "#44ff00cc",
-    "scrollbar.shadow": "#44ff006e"
+    "scrollbar.shadow": "#44ff006e",
+    "panel.border": "#44ff00",
+
   },
   
   "editor.scrollbar.verticalScrollbarSize": 7,
@@ -34,5 +36,10 @@
       "source.fixAll.ruff": "explicit",
       "source.organizeImports.ruff": "explicit"
     }
-  }
+  },
+  "python.testing.pytestArgs": [
+    "app", "-s"
+  ],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true
 }

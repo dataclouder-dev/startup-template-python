@@ -5,13 +5,15 @@ import numpy as np
 import requests
 from PIL import Image
 
+COLOR_SHAPE = 3
+
 
 def transform_to_webp_bytes(image_data: Union[BytesIO, bytes, np.ndarray]) -> BytesIO:
     # Handle numpy array (from cv2/matplotlib frames)
     if isinstance(image_data, np.ndarray):
         if isinstance(image_data, np.ndarray):
             # Convert BGR to RGB before creating PIL Image
-            if len(image_data.shape) == 3 and image_data.shape[2] == 3:  # Check if it's a color image
+            if len(image_data.shape) == COLOR_SHAPE and image_data.shape[2] == COLOR_SHAPE:  # Check if it's a color image
                 image_data = image_data[:, :, ::-1]  # BGR to RGB conversion
             pil_image = Image.fromarray(image_data)
     else:

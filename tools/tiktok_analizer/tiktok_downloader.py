@@ -11,8 +11,8 @@ from app.storage import storage
 from app.storage.storage_models import CloudStorageDataDict
 
 
-class TiktokLinkData(TypedDict):
-    url: str
+class VideoSourceData(TypedDict):
+    url: str  # video url from storage, don't confuse with platform url, is the source url video
     images: list[str]
     id: str
 
@@ -191,7 +191,7 @@ def download_video(data: dict, folder: str = None, to_memory: bool = False) -> U
         return None
 
 
-def download_image(data: TiktokLinkData, folder: str) -> None:
+def download_image(data: VideoSourceData, folder: str) -> None:
     logging.info("Downloading slideshow")
 
     for index, image_url in enumerate(data["images"]):
@@ -214,7 +214,7 @@ def download_image(data: TiktokLinkData, folder: str) -> None:
     logging.info("Slideshow downloaded successfully")
 
 
-async def download_video_and_upload_to_storage(data: TiktokLinkData, folder: str = "downloads") -> tuple[bytes | None, CloudStorageDataDict | None]:
+async def download_video_and_upload_to_storage(data: VideoSourceData, folder: str = "downloads") -> tuple[bytes | None, CloudStorageDataDict | None]:
     """
     Download media (video or slideshow) to the downloads directory
 

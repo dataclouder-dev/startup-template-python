@@ -7,20 +7,20 @@ from tools.whisper import groq_whisper
 
 
 async def analize_video(url: str) -> None:
-    await download_video(url)
+    await download_tiktok_video(url)
 
 
 async def save_tiktok_data(urls: list[str]) -> None:
-    for url in urls:
-        print("* Getting data from video", url)
+    for ind, url in enumerate(urls):
+        print(f"* {ind + 1}/{len(urls)} Getting data from video: {url}")
         username, video_id = extract_tiktok_url_components(url)
         data = await tiktok_downloader.request_data(video_id)
         saved_id = tiktok_downloader.save_in_db(data)
-        await asyncio.sleep(1)
+        await asyncio.sleep(0.7)
         print("saved tiktok data", saved_id)
 
 
-async def download_video(url: str) -> None:
+async def download_tiktok_video(url: str) -> None:
     result = await tiktok_downloader.get_video(url)
 
     if result is None:

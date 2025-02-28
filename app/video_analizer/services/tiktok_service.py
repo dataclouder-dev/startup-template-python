@@ -54,6 +54,7 @@ def get_data_from_tiktoks(user_id: str) -> list[dict]:
     ) / df["statistics_play_count"]  # Divided by views
 
     columns_for_frontend = [
+        "aweme_id",
         "statistics_comment_count",
         "statistics_digg_count",
         "statistics_download_count",
