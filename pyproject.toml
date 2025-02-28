@@ -29,6 +29,8 @@ groq = "^0.18.0"
 yt-dlp = "^2025.2.19"
 pandas = "^2.2.3"
 seaborn = "^0.13.2"
+google-cloud-storage = "^3.1.0"
+dataclouder-mongo = "^0.0.3"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.9.6"

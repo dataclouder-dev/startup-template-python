@@ -4,7 +4,10 @@ import cv2
 import numpy as np
 from moviepy.video.io.VideoFileClip import VideoFileClip
 
-MAX_FRAME_DIFF = 135
+from app.storage import image_utils_service, storage
+from app.storage.storage_models import CloudStorageDataDict
+
+MAX_FRAME_DIFF = 120
 
 
 def extract_frames(video_path: str, output_dir: str = "output") -> int:
@@ -71,6 +74,63 @@ def extract_audio(video_path: str, output_dir: str = "output") -> str:
     video.close()
     print("saving path")
     return audio_path
+
+
+def extract_frames_from_bytes(video_bytes: bytes, output_dir: str = "output") -> list[CloudStorageDataDict]:
+    """Extract frames from video bytes and save key frames
+    Parameters:
+        video_bytes (bytes): Video content as bytes
+        output_dir (str): Directory to save extracted content
+    Returns:
+        int: Number of frames processed
+    """
+
+    print(" 🖼️ extracting frames from bytes")
+
+    results = []
+
+    # Create a temporary file to store the video
+    import tempfile
+
+    with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_file:
+        temp_file.write(video_bytes)
+        temp_path = temp_file.name
+
+    try:
+        # Use the temporary file path with VideoCapture
+        cap = cv2.VideoCapture(temp_path)
+        frame_count = 0
+        prev_frame = None
+        frame_exported_count = 0
+
+        while cap.isOpened():
+            ret, frame = cap.read()
+            if not ret:
+                break
+
+            # Save frame if it's significantly different from previous frame
+            if prev_frame is not None:
+                diff = np.mean(np.abs(frame - prev_frame))
+                if diff > MAX_FRAME_DIFF:  # Threshold for scene change
+                    frame_exported_count = frame_exported_count + 1
+                    webp_img_io = image_utils_service.transform_to_webp_bytes(frame)
+
+                    frame_path = f"{output_dir}/frame_{frame_count:04d}.webp"
+                    print(f" 📄 {frame_exported_count} uploaded frame", frame_path)
+                    storage_data = storage.upload_bytes_to_ref(frame_path, webp_img_io.getvalue())
+                    print("DAta:", storage_data)
+                    results.append(storage_data)
+                    # cv2.imwrite(frame_path, frame)
+            prev_frame = frame.copy()
+            frame_count += 1
+
+        cap.release()
+        print(f"Total Extracted {frame_exported_count} frames")
+        return results
+
+    finally:
+        # Clean up the temporary file
+        os.unlink(temp_path)
 
 
 def analyze_video(video_path: str, output_dir: str = "output") -> dict:

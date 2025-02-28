@@ -2,11 +2,19 @@ import json
 import logging
 import os
 from pathlib import Path
-from typing import Union
+from typing import TypedDict, Union
 
 import requests
 
 from app.modules.mongo.mongo import db
+from app.storage import storage
+from app.storage.storage_models import CloudStorageDataDict
+
+
+class TiktokLinkData(TypedDict):
+    url: str
+    images: list[str]
+    id: str
 
 
 def log_retry(url: str) -> None:
@@ -139,7 +147,74 @@ def remove_from_retry(url: str) -> None:
         logging.error(f"Error removing URL from retry file: {e}")
 
 
-async def download_media(data: dict[str, Union[str, list[str]]], folder: str = "downloads") -> None:
+def download_video(data: dict, folder: str = None, to_memory: bool = False) -> Union[None, bytes]:
+    """
+    Download a video from the given URL and either save it to disk or return as bytes.
+
+    Args:
+        data (dict): Dictionary containing video data with 'id' and 'url' keys
+        folder (str, optional): Directory to save the video if downloading to disk. Required if to_memory is False
+        to_memory (bool): If True, return video as bytes. If False, save to disk
+
+    Returns:
+        Union[None, bytes]: If to_memory is True, returns video bytes. Otherwise returns None
+    """
+    if not to_memory and not folder:
+        raise ValueError("folder must be specified when downloading to disk")
+
+    # Download video
+    response = requests.get(data["url"], stream=True)
+    response.raise_for_status()
+
+    if to_memory:
+        # Download to memory
+        video_bytes = b""
+        for chunk in response.iter_content(chunk_size=8192):
+            video_bytes += chunk
+        logging.info("Video downloaded to memory successfully")
+        return video_bytes
+    else:
+        # Download to disk
+        filename = f"{data['id']}.mp4"
+        filepath = os.path.join(folder, filename)
+
+        # Skip if file already exists
+        if os.path.exists(filepath):
+            logging.warning(f"File '{filename}' already exists. Skipping.")
+            return None
+
+        with open(filepath, "wb") as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                f.write(chunk)
+
+        logging.info("Video downloaded to disk successfully")
+        return None
+
+
+def download_image(data: TiktokLinkData, folder: str) -> None:
+    logging.info("Downloading slideshow")
+
+    for index, image_url in enumerate(data["images"]):
+        filename = f"{data['id']}_{index}.jpeg"
+        filepath = os.path.join(folder, filename)
+
+        # Skip if file already exists
+        if os.path.exists(filepath):
+            logging.warning(f"File '{filename}' already exists. Skipping.")
+            continue
+
+        # Download image
+        response = requests.get(image_url, stream=True)
+        response.raise_for_status()
+
+        with open(filepath, "wb") as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                f.write(chunk)
+
+    logging.info("Slideshow downloaded successfully")
+
+
+async def download_video_and_upload_to_storage(data: TiktokLinkData, folder: str = "downloads") -> tuple[bytes | None, CloudStorageDataDict | None]:
     """
     Download media (video or slideshow) to the downloads directory
 
@@ -156,48 +231,15 @@ async def download_media(data: dict[str, Union[str, list[str]]], folder: str = "
     print("Video data", data)
 
     try:
-        # Handle slideshow
-        if data["images"]:
-            logging.info("Downloading slideshow")
-
-            for index, image_url in enumerate(data["images"]):
-                filename = f"{data['id']}_{index}.jpeg"
-                filepath = os.path.join(folder, filename)
-
-                # Skip if file already exists
-                if os.path.exists(filepath):
-                    logging.warning(f"File '{filename}' already exists. Skipping.")
-                    continue
-
-                # Download image
-                response = requests.get(image_url, stream=True)
-                response.raise_for_status()
-
-                with open(filepath, "wb") as f:
-                    for chunk in response.iter_content(chunk_size=8192):
-                        f.write(chunk)
-
-            logging.info("Slideshow downloaded successfully")
-
-        # Handle video
-        elif data["url"]:
-            filename = f"{data['id']}.mp4"
-            filepath = os.path.join(folder, filename)
-
-            # Skip if file already exists
-            if os.path.exists(filepath):
-                logging.warning(f"File '{filename}' already exists. Skipping.")
-                return
-
-            # Download video
-            response = requests.get(data["url"], stream=True)
-            response.raise_for_status()
-
-            with open(filepath, "wb") as f:
-                for chunk in response.iter_content(chunk_size=8192):
-                    f.write(chunk)
-
-            logging.info("Video downloaded successfully")
+        if data["images"]:  # Handle slideshow
+            download_image(data, folder)
+        elif data["url"]:  # Handle video
+            bytes_video = download_video(data, folder, to_memory=True)
+            if isinstance(bytes_video, bytes):
+                storage_data = storage.upload_bytes_to_ref(f"{data['id']}.mp4", bytes_video)
+                print("Storage data", storage_data)
+                # i got video
+                return bytes_video, storage_data
 
         else:
             logging.error("No media URL found in data")

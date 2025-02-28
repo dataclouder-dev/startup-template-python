@@ -32,17 +32,19 @@ async def download_video(url: str) -> None:
     # Use relative path within the project
     download_path = Path("./downloads") / username / video_id
 
-    await tiktok_downloader.download_media(result, str(download_path))
+    video_bytes, storage_data = await tiktok_downloader.download_video_and_upload_to_storage(result, str(download_path))
 
-    print("downloaded video", result)
+    print("☁️ downloaded and uploaded to cloud", storage_data)
 
     video_path = str(download_path / f"{video_id}.mp4")
-    output_frames_dir = str(download_path / "frames")
-    video_extraction.extract_frames(video_path, output_frames_dir)
-    print("extracted frames", output_frames_dir)
+    output_frames_dir = f"tiktok/{username}/frames/{video_id}"
+
+    storage_screnshots = video_extraction.extract_frames_from_bytes(video_bytes, output_frames_dir)
+    print(" 🎞️ extracted frames", output_frames_dir, storage_screnshots)
+    print("❌ Check: save in db", storage_screnshots)
     output_audio_dir = str(download_path / "audio")
     audio_path = video_extraction.extract_audio(video_path, output_audio_dir)
-    print("extracted audio", audio_path)
+    print(" 🎤 extracted audio", audio_path)
 
     transcription = groq_whisper.transcribe_audio_groq(audio_path)
     transcription_text = transcription.text
