@@ -273,7 +273,8 @@ def get_collection(collection: str) -> Collection:
     elif collection in str:
         return db[collection.value]
     else:
-        raise AppException("not able to find table in code", "Se intenta obtener una colleccion no registrada en el código")
+        # raise AppException("not able to find table in code", "Se intenta obtener una colleccion no registrada en el código")
+        raise Exception("not able to find table in code")
 
 
 def update_all_object(collection: str, id_name: str, id: str, object_dict: dict) -> int:

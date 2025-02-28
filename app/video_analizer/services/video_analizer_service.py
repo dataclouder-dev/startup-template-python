@@ -8,7 +8,6 @@ from tools.whisper import groq_whisper
 
 async def analize_video(url: str) -> None:
     await download_video(url)
-    print(url)
 
 
 async def save_tiktok_data(urls: list[str]) -> None:
@@ -32,8 +31,9 @@ async def download_video(url: str) -> None:
     username, video_id = extract_tiktok_url_components(url)
     # Use relative path within the project
     download_path = Path("./downloads") / username / video_id
-    # download_path.mkdir(parents=True, exist_ok=True) i moved to download media
+
     await tiktok_downloader.download_media(result, str(download_path))
+
     print("downloaded video", result)
 
     video_path = str(download_path / f"{video_id}.mp4")
