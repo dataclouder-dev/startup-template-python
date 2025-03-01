@@ -21,4 +21,5 @@ def get_resource(resource_id: str) -> dict:
 
 def find_sources_by_video_platform_id(platform_id: str) -> list[dict]:
     db = mongo.get_db()
-    return list(db[collection].find({"video.idPlatform": platform_id}))
+    result = list(db[collection].find({"video.idPlatform": platform_id}))
+    return mongo.transform_object_id_to_string(result)

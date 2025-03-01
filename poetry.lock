@@ -506,14 +506,14 @@ pydantic-ai = ">=0.0.19"
 
 [[package]]
 name = "dataclouder-mongo"
-version = "0.0.5"
+version = "0.0.6"
 description = "A library to improve mongo methods"
 optional = false
 python-versions = ">=3.11"
 groups = ["main"]
 files = [
-    {file = "dataclouder_mongo-0.0.5-py3-none-any.whl", hash = "sha256:298e80a4d08e2fc939c0c662060b509da02fdc55999b7b707af626bb7deffd07"},
-    {file = "dataclouder_mongo-0.0.5.tar.gz", hash = "sha256:a36d206244fbd55af9b46ff864c52caa15be8c4866d67ff6cac5d289586776df"},
+    {file = "dataclouder_mongo-0.0.6-py3-none-any.whl", hash = "sha256:d3012e3661b6eb570758e060badbeb884644eabfc4d838570e85eba02a9759f8"},
+    {file = "dataclouder_mongo-0.0.6.tar.gz", hash = "sha256:8d2733d04d667914a1f9d9ef1ee8e59007ee0bada775289e12f10bee29b869be"},
 ]
 
 [[package]]
@@ -4055,4 +4055,4 @@ test = ["pytest (>=8.1,<9.0)", "pytest-rerunfailures (>=14.0,<15.0)"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12"
-content-hash = "a00df90dba15c9249e882db0a7c32de02709d8843a2d49d4bb18258ecb5aab6d"
+content-hash = "80723a9fa3e4be187d9e5646b7a0d527eea6ec7a08d26faddd70cd17166c0b00"

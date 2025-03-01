@@ -22,11 +22,11 @@ async def greet() -> dict:
     return {"hi", "hello"}
 
 
-# TODO: finish source service
 @router.get("/video-agent-source")
 @handler_exception
-async def get_video_agent_source(video_id: str) -> dict:
-    return {"hi", "hello"}
+async def get_video_agent_source(video_platform_id: str) -> list[dict]:
+    result = video_analizer_service.get_tiktok_sources(video_platform_id)
+    return result
 
 
 @router.post("/")
