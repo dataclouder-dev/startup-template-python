@@ -7,7 +7,8 @@ from moviepy.video.io.VideoFileClip import VideoFileClip
 from app.storage import image_utils_service, storage
 from app.storage.storage_models import CloudStorageDataDict
 
-MAX_FRAME_DIFF = 120
+MAX_FRAME_DIFF = 125
+MAX_EXPORTED_FRAMES = 15
 
 
 def extract_frames(video_path: str, output_dir: str = "output") -> int:
@@ -76,7 +77,7 @@ def extract_audio(video_path: str, output_dir: str = "output") -> str:
     return audio_path
 
 
-def extract_frames_from_bytes(video_bytes: bytes, output_dir: str = "output") -> list[CloudStorageDataDict]:
+def extract_frames_and_upload(video_bytes: bytes, output_dir: str = "output") -> list[CloudStorageDataDict]:
     """Extract frames from video bytes and save key frames
     Parameters:
         video_bytes (bytes): Video content as bytes
@@ -123,6 +124,8 @@ def extract_frames_from_bytes(video_bytes: bytes, output_dir: str = "output") ->
                     # cv2.imwrite(frame_path, frame)
             prev_frame = frame.copy()
             frame_count += 1
+            if frame_exported_count > MAX_EXPORTED_FRAMES:
+                break
 
         cap.release()
         print(f"Total Extracted {frame_exported_count} frames")

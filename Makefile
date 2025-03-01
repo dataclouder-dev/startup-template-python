@@ -85,7 +85,7 @@ update-dc:
 	@echo "if new library is not working check: poetry cache clear . --all -> poetry update"
 	poetry cache clear . --all
 	@echo "Updating Dataclouder packages to latest versions..."
-	poetry add dataclouder-conversation-ai-cards@latest dataclouder-tts@latest dataclouder-core@latest
+	poetry add dataclouder-conversation-ai-cards@latest dataclouder-tts@latest dataclouder-core@latest dataclouder-mongo@latest
 	@echo "✅ Dataclouder packages updated successfully!"
 
 

@@ -26,8 +26,20 @@ def find_filtered_generics(filters: FiltersConfig) -> list:
 def save_generic(generic: GenericModel) -> GenericModel:
     """Save generic insert if not exists, or update if exists"""
     collection = db[col_name]
-    print("antes de insertar")
-    result = collection.find_one_and_replace({"_id": ObjectId()}, generic.model_dump(), upsert=True, return_document=True)
+
+    # Convert the model to dict for manipulation
+    generic_dict = generic.model_dump()
+
+    if hasattr(generic, "id") and generic.id:
+        # Update existing document
+        query = {"_id": ObjectId(generic.id)}
+        # Remove id from the update data
+        generic_dict.pop("id", None)
+    else:
+        # Create new document
+        query = {"_id": ObjectId()}
+
+    result = collection.find_one_and_replace(query, generic_dict, upsert=True, return_document=True)
     result["_id"] = str(result["_id"])
     return result
 

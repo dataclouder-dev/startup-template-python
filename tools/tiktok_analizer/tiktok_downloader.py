@@ -1,7 +1,6 @@
 import json
 import logging
 import os
-from pathlib import Path
 from typing import TypedDict, Union
 
 import requests
@@ -214,7 +213,7 @@ def download_image(data: VideoSourceData, folder: str) -> None:
     logging.info("Slideshow downloaded successfully")
 
 
-async def download_video_and_upload_to_storage(data: VideoSourceData, folder: str = "downloads") -> tuple[bytes | None, CloudStorageDataDict | None]:
+async def download_video_and_upload_to_storage(data: VideoSourceData) -> tuple[bytes | None, CloudStorageDataDict | None]:
     """
     Download media (video or slideshow) to the downloads directory
 
@@ -226,15 +225,17 @@ async def download_video_and_upload_to_storage(data: VideoSourceData, folder: st
                 'id': str  # Video/Post ID
             }
     """
-    Path(folder).mkdir(parents=True, exist_ok=True)
+    # Path(folder).mkdir(parents=True, exist_ok=True)
 
     print("Video data", data)
 
     try:
-        if data["images"]:  # Handle slideshow
-            download_image(data, folder)
+        if data.get("images"):  # Handle slideshow
+            print("There are images, Not support for images yet. ")
+            # download_image(data, folder)
+            pass
         elif data["url"]:  # Handle video
-            bytes_video = download_video(data, folder, to_memory=True)
+            bytes_video = download_video(data, None, to_memory=True)
             if isinstance(bytes_video, bytes):
                 storage_data = storage.upload_bytes_to_ref(f"{data['id']}.mp4", bytes_video)
                 print("Storage data", storage_data)
