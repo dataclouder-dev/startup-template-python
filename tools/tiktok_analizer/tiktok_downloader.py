@@ -213,38 +213,32 @@ def download_image(data: VideoSourceData, folder: str) -> None:
     logging.info("Slideshow downloaded successfully")
 
 
-async def download_video_and_upload_to_storage(data: VideoSourceData) -> tuple[bytes | None, CloudStorageDataDict | None]:
+async def download_tiktok_media(data: VideoSourceData) -> bytes | None:
     """
-    Download media (video or slideshow) to the downloads directory
+    Download TikTok media (video or slideshow) and return the bytes
 
     Args:
-        data (dict): Dictionary containing media information
+        data (VideoSourceData): Dictionary containing media information
             Format: {
                 'url': str,  # Video URL if video
                 'images': list,  # List of image URLs if slideshow
                 'id': str  # Video/Post ID
             }
+
+    Returns:
+        bytes | None: The downloaded video bytes if successful, None otherwise
     """
-    # Path(folder).mkdir(parents=True, exist_ok=True)
-
-    print("Video data", data)
-
     try:
-        if data.get("images"):  # Handle slideshow
-            print("There are images, Not support for images yet. ")
-            # download_image(data, folder)
-            pass
-        elif data["url"]:  # Handle video
+        if data.get("images"):
+            print("There are images, Not support for images yet.")
+            return None
+        elif data["url"]:
             bytes_video = download_video(data, None, to_memory=True)
             if isinstance(bytes_video, bytes):
-                storage_data = storage.upload_bytes_to_ref(f"{data['id']}.mp4", bytes_video)
-                print("Storage data", storage_data)
-                # i got video
-                return bytes_video, storage_data
-
+                return bytes_video
         else:
             logging.error("No media URL found in data")
-            return
+            return None
 
     except requests.exceptions.RequestException as e:
         logging.error(f"Error downloading media: {e}")
@@ -252,6 +246,51 @@ async def download_video_and_upload_to_storage(data: VideoSourceData) -> tuple[b
     except Exception as e:
         logging.error(f"Unexpected error while downloading media: {e}")
         raise
+
+
+async def upload_media_to_storage(storage_ref: str, media_bytes: bytes) -> CloudStorageDataDict | None:
+    """
+    Upload media bytes to storage
+
+    Args:
+        storage_ref (str): The path to save the media in storage, should include extension example: folder1/video/filename.mp4
+        media_bytes (bytes): The media content to upload
+
+    Returns:
+        CloudStorageDataDict | None: Storage data if upload successful, None otherwise
+    """
+    try:
+        storage_data = storage.upload_bytes_to_ref(storage_ref, media_bytes)
+        print("Storage data", storage_data)
+        return storage_data
+    except Exception as e:
+        logging.error(f"Error uploading media to storage: {e}")
+        return None
+
+
+async def download_video_and_upload_to_storage(data: VideoSourceData) -> tuple[bytes | None, CloudStorageDataDict | None]:
+    """
+    Download media (video or slideshow) and upload it to storage
+
+    Args:
+        data (VideoSourceData): Dictionary containing media information
+            Format: {
+                'url': str,  # Video URL if video
+                'images': list,  # List of image URLs if slideshow
+                'id': str  # Video/Post ID
+            }
+
+    Returns:
+        tuple[bytes | None, CloudStorageDataDict | None]: Tuple containing the video bytes and storage data
+    """
+    print("Video data", data)
+
+    media_bytes = await download_tiktok_media(data)
+    if not media_bytes:
+        return None, None
+
+    storage_data = await upload_media_to_storage(data["id"], media_bytes)
+    return media_bytes, storage_data
 
 
 def save_in_db(data: dict) -> str | None:

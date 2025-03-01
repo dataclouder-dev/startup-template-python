@@ -6,7 +6,7 @@ from groq import Groq
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 
-def transcribe_audio(audio_file: bytes, model: str = "whisper-large-v3") -> Optional[str]:
+def transcribe_audio_with_bytes(audio_file: bytes, model: str = "whisper-large-v3") -> Optional[str]:
     transcription = client.audio.transcriptions.create(
         file=("audio.mp3", audio_file),
         model=model,

@@ -11,12 +11,21 @@ from app.video_analizer.models.model import VideoAnalysisModel
 from app.video_analizer.services import video_analizer_service
 from tools.youtube import yt_downloads
 
+# from app.agents.services import sources_service
+
 router = APIRouter(prefix="/api/video-analizer", tags=["Video Analizer"])
 
 
 @router.get("/")
 @handler_exception
 async def greet() -> dict:
+    return {"hi", "hello"}
+
+
+# TODO: finish source service
+@router.get("/video-agent-source")
+@handler_exception
+async def get_video_agent_source(video_id: str) -> dict:
     return {"hi", "hello"}
 
 

@@ -1,7 +1,10 @@
 import asyncio
 import re
 
+from app.agents.models.agent_sources_model import AgentSource, ImageSource, SourceType, VideoSource
+from app.agents.repositories import agent_sources_repository
 from tools.tiktok_analizer import tiktok_downloader, video_extraction
+from tools.whisper import groq_whisper
 
 
 async def analize_video(url: str) -> None:
@@ -24,30 +27,43 @@ async def download_tiktok_upload_files_and_update_db(url: str) -> None:
     print(f" 🎞️ Starting download username: {username}, video_id: {video_id}")
     result = await tiktok_downloader.get_video(url)
 
-    if result is None:
-        print(f"Could not retrieve video data for {url}")
-        return
+    agent_source = AgentSource(type=SourceType.TIKTOK)
 
-    video_bytes, storage_data = await tiktok_downloader.download_video_and_upload_to_storage(result)
+    print(" * 1) downloading video and uploading to cloud")
+    video_bytes = await tiktok_downloader.download_tiktok_media(result)
 
+    video_storage_ref = f"tiktok/{username}/videos/{video_id}.mp4"
+    storage_data = await tiktok_downloader.upload_media_to_storage(video_storage_ref, video_bytes)
     print("☁️ downloaded and uploaded to cloud", storage_data)
+    video_source = VideoSource(idPlatform=video_id, video=storage_data)
+    agent_source.video = video_source
+    agent_source = agent_sources_repository.save_source(agent_source)
+    print("🔍 saved in db", agent_source)
 
-    # video_path = str(download_path / f"{video_id}.mp4")
+    print(" * 2) extracting frames and uploading to cloud")
+
     storage_frames_dir = f"tiktok/{username}/frames/{video_id}"
+    screenshots = video_extraction.extract_frames_from_video_bytes(video_bytes)
+    print("🖼️ extracted screenshots", len(screenshots))
+    storage_screnshots = video_extraction.upload_frames_to_storage(screenshots, storage_frames_dir)
+    print("Ready to save in db", storage_screnshots)
+    video_frames = [ImageSource(image=frame, description="", title="") for frame in storage_screnshots]
+    agent_source.video.frames = video_frames
+    agent_source = agent_sources_repository.save_source(agent_source)
 
-    storage_screnshots = video_extraction.extract_frames_and_upload(video_bytes, storage_frames_dir)
-    print(" 🎞️ extracted frames", storage_frames_dir, storage_screnshots)
-    print("❌ Check: save in db", storage_screnshots)
-    # output_audio_dir = str(download_path / "audio")
-    # audio_path = video_extraction.extract_audio(video_path, output_audio_dir)
-    # print(" 🎤 extracted audio", audio_path)
+    print(" * 3) Extract Audio and Transcription")
+    audio_bytes = video_extraction.extract_audio_from_video_bytes(video_bytes)
+    audio_storage_ref = f"tiktok/{username}/audio/{video_id}.mp3"
+    audio_storage_data = await tiktok_downloader.upload_media_to_storage(audio_storage_ref, audio_bytes)
+    print("🎤 extracted audio, uploaded to cloud and starting transcription", audio_storage_data)
 
-    # transcription = groq_whisper.transcribe_audio_groq(audio_path)
-    # transcription_text = transcription.text
-    # print("transcription", transcription_text, transcription.language, transcription.segments, transcription.duration)
-    # Read audio using whisper.
-
-    # move all data to sources.
+    transcription = groq_whisper.transcribe_audio_with_bytes(audio_bytes)
+    transcription_object = {"text": transcription.text, "language": transcription.language, "segments": transcription.segments, "duration": transcription.duration}
+    print("🎤 transcription", transcription_object)
+    agent_source.video.transcription = transcription_object
+    agent_source = agent_sources_repository.save_source(agent_source)
+    print("Process completed", agent_source)
+    return agent_source
 
 
 def extract_tiktok_url_components(url: str) -> tuple[str, str]:
@@ -71,3 +87,7 @@ def extract_tiktok_url_components(url: str) -> tuple[str, str]:
     video_id = match.group(2)
 
     return username, video_id
+
+
+def get_tiktok_sources(video_id: str) -> list[dict]:
+    return agent_sources_repository.find_sources_by_video_platform_id(video_id)
