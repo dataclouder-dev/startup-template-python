@@ -3,13 +3,14 @@ import io
 
 from dataclouder_core.exception import handler_exception
 from dataclouder_core.models.models import FiltersConfig
-from fastapi import APIRouter, BackgroundTasks
+from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 from typing_extensions import Any
 
 from app.generics.services import generic_service
 from app.video_analizer.models.model import VideoAnalysisModel
 from app.video_analizer.services import video_analizer_service
+from tools.demucs import demucs_utils
 from tools.youtube import yt_dlp_utils, yt_downloads
 
 # from app.agents.services import sources_service
@@ -17,10 +18,14 @@ from tools.youtube import yt_dlp_utils, yt_downloads
 router = APIRouter(prefix="/api/video-analizer", tags=["Video Analizer"])
 
 
-@router.get("/")
+@router.post("/")
 @handler_exception
-async def greet() -> dict:
-    return {"hi", "hello"}
+async def start_analysis(video: VideoAnalysisModel) -> dict:
+    print("starting video analisis of", video)
+    agent_source = video_analizer_service.save_agent_source()
+    asyncio.create_task(video_analizer_service.analize_video(video, agent_source))
+    # Return immediately without waiting for the background task
+    return agent_source.model_dump()
 
 
 @router.get("/video-agent-source")
@@ -28,19 +33,6 @@ async def greet() -> dict:
 async def get_video_agent_source(video_platform_id: str) -> list[dict]:
     result = video_analizer_service.get_tiktok_sources(video_platform_id)
     return result
-
-
-@router.post("/")
-@handler_exception
-async def start_analysis(video: VideoAnalysisModel, background_tasks: BackgroundTasks) -> dict:
-    print("starting video analisis of", video)
-    agent_source = video_analizer_service.save_agent_source()
-
-    # Use asyncio.create_task to run the analysis in the background
-
-    asyncio.create_task(video_analizer_service.analize_video(video.url, agent_source))
-    # Return immediately without waiting for the background task
-    return agent_source.model_dump()
 
 
 @router.post("/extract-tiktok-data")
@@ -82,15 +74,25 @@ async def download_audio(video: VideoAnalysisModel) -> StreamingResponse:
 async def download_youtube_video(video: VideoAnalysisModel) -> StreamingResponse:
     print("starting video analisis of", video, video.options)
     media_type = "video/mp4"
-    if video.options.get("audio"):
+    file_name = "video.mp4"
+    if video.options.get("audio") or video.options.get("vocals"):
         media_type = "audio/mpeg"
-        video_bytes, info_dict = yt_dlp_utils.download_youtube_audio_to_memory(video.url)
+        video_bytes_io, info_dict = yt_dlp_utils.download_youtube_audio_to_memory(video.url)
+        file_name = info_dict.get("id", "video")
+        file_name = file_name.replace(".mp4", "") + ".mp3"
+
+        if video.options.get("vocals"):
+            video_bytes_io = demucs_utils.extract_vocals_from_bytes(video_bytes_io.getvalue())
+            video_bytes_io = io.BytesIO(video_bytes_io)
+            print("vocals creo que tengo que convertir a BytesIO", video_bytes_io)
+
     else:
-        video_bytes, info_dict = yt_dlp_utils.download_youtube_video_to_memory(video.url)
+        video_bytes_io, info_dict = yt_dlp_utils.download_youtube_video_to_memory(video.url)
+        file_name = info_dict.get("id", "video")
     print("aqui termino file name", info_dict)
 
     return StreamingResponse(
-        video_bytes,
+        video_bytes_io,
         media_type=media_type,
-        headers={"Content-Disposition": f'attachment; filename="{info_dict.get("id", "video")}"', "Content-Length": str(video_bytes.getbuffer().nbytes)},
+        headers={"Content-Disposition": f'attachment; filename="{file_name}"', "Content-Length": str(video_bytes_io.getbuffer().nbytes)},
     )

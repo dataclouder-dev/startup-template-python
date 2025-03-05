@@ -3,8 +3,10 @@ import re
 
 from app.agents.models.agent_sources_model import AgentSource, ImageSource, SourceType, VideoSource
 from app.agents.repositories import agent_sources_repository
+from app.video_analizer.models.model import VideoAnalysisModel
 from tools.tiktok_analizer import tiktok_downloader, video_extraction
 from tools.whisper import groq_whisper
+from tools.youtube import yt_dlp_utils
 
 
 def save_agent_source() -> AgentSource:
@@ -12,12 +14,26 @@ def save_agent_source() -> AgentSource:
     return agent_sources_repository.save_source(agent_source)
 
 
-async def analize_video(url: str, agent_source: AgentSource) -> AgentSource:
+async def analize_video(videoAnalysis: VideoAnalysisModel, agent_source: AgentSource) -> AgentSource:
     # Run the potentially blocking operation in a thread pool
     # This prevents it from blocking the event loop
-    asyncio.create_task(_run_analysis(url, agent_source))
+    if videoAnalysis.website == "tiktok":
+        asyncio.create_task(_run_analysis(videoAnalysis.url, agent_source))
+    elif videoAnalysis.website == "youtube":
+        asyncio.create_task(_run_analysis_youtube(videoAnalysis.url, agent_source))
+    else:
+        raise ValueError("Invalid website")
 
     return agent_source
+
+
+async def _run_analysis_youtube(url: str, agent_source: AgentSource) -> None:
+    try:
+        await download_youtube_video_upload_files_and_update_db(url, agent_source)
+    except Exception as e:
+        print(f"Error in background analysis: {e}")
+        _save_source_status(agent_source, f"Error during analysis: {str(e)}")
+        agent_sources_repository.save_source(agent_source)
 
 
 async def _run_analysis(url: str, agent_source: AgentSource) -> None:
@@ -37,6 +53,19 @@ async def save_tiktok_data(urls: list[str]) -> None:
         saved_id = tiktok_downloader.save_in_db(data)
         await asyncio.sleep(0.7)
         print("saved tiktok data", saved_id)
+
+
+async def download_youtube_video_upload_files_and_update_db(url: str, agent_source: AgentSource) -> None:
+    # Todo check if this method is working...r
+    video_bytes, info_dict = yt_dlp_utils.download_youtube_video_to_memory(url)
+    video_storage_ref = f"youtube/{info_dict.get('id', 'video')}.mp4"
+    _save_source_status(agent_source, "Uploading video to cloud storage...")
+    # Refactor this, i need stourage libs with this method
+    storage_data = await tiktok_downloader.upload_media_to_storage(video_storage_ref, video_bytes)
+    _save_source_status(agent_source, "Video uploaded to cloud storage! Saving database..." + str(storage_data))
+    agent_source.video = VideoSource(idPlatform=info_dict.get("id", "video"), video=storage_data)
+    agent_source = agent_sources_repository.save_source(agent_source)
+    pass
 
 
 async def download_tiktok_upload_files_and_update_db(url: str, agent_source: AgentSource) -> None:
