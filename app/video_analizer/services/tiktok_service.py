@@ -27,6 +27,12 @@ def normalize_column(df: pd.DataFrame, column: str, remove_original_column: bool
         return df
 
 
+def get_tiktok_data(id: str) -> dict:
+    tiktok = db["tiktoks_aweme"].find_one({"aweme_id": id})
+    tiktok["_id"] = str(tiktok["_id"])
+    return tiktok
+
+
 def get_data_from_tiktoks(user_id: str) -> list[dict]:
     tiktoks = list(db["tiktoks_aweme"].find({"author.unique_id": user_id}))
 

@@ -1,15 +1,16 @@
+import asyncio
 import io
 
 from dataclouder_core.exception import handler_exception
 from dataclouder_core.models.models import FiltersConfig
-from fastapi import APIRouter
+from fastapi import APIRouter, BackgroundTasks
 from fastapi.responses import StreamingResponse
 from typing_extensions import Any
 
 from app.generics.services import generic_service
 from app.video_analizer.models.model import VideoAnalysisModel
 from app.video_analizer.services import video_analizer_service
-from tools.youtube import yt_downloads
+from tools.youtube import yt_dlp_utils, yt_downloads
 
 # from app.agents.services import sources_service
 
@@ -31,12 +32,15 @@ async def get_video_agent_source(video_platform_id: str) -> list[dict]:
 
 @router.post("/")
 @handler_exception
-async def start_analysis(video: VideoAnalysisModel) -> dict:
+async def start_analysis(video: VideoAnalysisModel, background_tasks: BackgroundTasks) -> dict:
     print("starting video analisis of", video)
-    result = await video_analizer_service.analize_video(video.url)
-    print(result)
+    agent_source = video_analizer_service.save_agent_source()
 
-    return {"message": "Analysis started"}
+    # Use asyncio.create_task to run the analysis in the background
+
+    asyncio.create_task(video_analizer_service.analize_video(video.url, agent_source))
+    # Return immediately without waiting for the background task
+    return agent_source.model_dump()
 
 
 @router.post("/extract-tiktok-data")
@@ -45,7 +49,6 @@ async def save_tiktok_data(video: dict) -> dict:
     print("starting video analisis of", video)
     result = await video_analizer_service.save_tiktok_data(video["urls"])
     print(result)
-
     return {"message": "Analysis started"}
 
 
@@ -71,4 +74,23 @@ async def download_audio(video: VideoAnalysisModel) -> StreamingResponse:
         audio_stream,
         media_type="audio/mpeg",  # Adjust content type based on your audio format
         headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+
+@router.post("/download-youtube-video")
+@handler_exception
+async def download_youtube_video(video: VideoAnalysisModel) -> StreamingResponse:
+    print("starting video analisis of", video, video.options)
+    media_type = "video/mp4"
+    if video.options.get("audio"):
+        media_type = "audio/mpeg"
+        video_bytes, info_dict = yt_dlp_utils.download_youtube_audio_to_memory(video.url)
+    else:
+        video_bytes, info_dict = yt_dlp_utils.download_youtube_video_to_memory(video.url)
+    print("aqui termino file name", info_dict)
+
+    return StreamingResponse(
+        video_bytes,
+        media_type=media_type,
+        headers={"Content-Disposition": f'attachment; filename="{info_dict.get("id", "video")}"', "Content-Length": str(video_bytes.getbuffer().nbytes)},
     )

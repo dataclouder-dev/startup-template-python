@@ -19,3 +19,10 @@ async def get_availible_users() -> list:
 async def get_user_data(user_id: str) -> list[dict]:
     result = tiktok_service.get_data_from_tiktoks(user_id)
     return result
+
+
+@router.get("/data/{tiktok_id}")
+@handler_exception
+async def get_data(tiktok_id: str) -> dict:
+    result = tiktok_service.get_tiktok_data(tiktok_id)
+    return result

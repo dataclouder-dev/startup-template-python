@@ -43,3 +43,6 @@ class AgentSource(BaseModel):
     image: Optional[ImageSource] = None
     video: Optional[VideoSource] = None
     assets: Optional[dict[str, CloudStorageDataDict]] = None
+    status: Optional[str] = None
+    statusDescription: Optional[str] = None
+    relationId: Optional[str] = None

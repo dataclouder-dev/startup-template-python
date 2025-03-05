@@ -13,6 +13,7 @@ from app.llm import llm_router
 from app.modules.mongo import mongo_controller
 from app.tts import tts_router
 from app.video_analizer.controllers import tiktok_controller, video_analizer_controller
+from app.video_generator.controller import video_controller
 
 load_dotenv()
 
@@ -38,6 +39,7 @@ app.include_router(generic_controller.router)
 app.include_router(tts_controller.router)
 app.include_router(video_analizer_controller.router)
 app.include_router(tiktok_controller.router)
+app.include_router(video_controller.router)
 
 
 @app.get("/", response_class=HTMLResponse)

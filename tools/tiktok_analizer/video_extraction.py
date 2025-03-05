@@ -8,7 +8,7 @@ from moviepy.video.io.VideoFileClip import VideoFileClip
 from app.storage import image_utils_service, storage
 from app.storage.storage_models import CloudStorageDataDict
 
-MAX_FRAME_DIFF = 125
+MAX_FRAME_DIFF = 127
 MAX_EXPORTED_FRAMES = 15
 
 

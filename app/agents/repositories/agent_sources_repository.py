@@ -4,7 +4,7 @@ from dataclouder_mongo import mongo
 
 from app.agents.models.agent_sources_model import AgentSource
 
-collection = "sources_llm"
+collection = "agent_sources"
 
 
 def save_source(source: AgentSource, return_dict: bool = False) -> dict | AgentSource:

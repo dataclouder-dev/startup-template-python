@@ -97,7 +97,7 @@ async def request_data(id_video: str) -> dict:
         return None
 
 
-async def get_video(url: str, watermark: bool = False) -> dict:
+async def get_titktok_video_data(url: str, watermark: bool = False) -> dict:
     """
     Fetch video information from TikTok API
 
@@ -121,7 +121,7 @@ async def get_video(url: str, watermark: bool = False) -> dict:
         save_in_db(tiktok_data)
 
         url_media, image_urls = _parse_media_urls(tiktok_data, watermark)
-        return {"url": url_media, "images": image_urls, "id": id_video}
+        return {"url": url_media, "images": image_urls, "id": id_video}, tiktok_data
 
     except Exception as e:
         logging.error(f"Error fetching video: {e}")

@@ -7,8 +7,26 @@ from tools.tiktok_analizer import tiktok_downloader, video_extraction
 from tools.whisper import groq_whisper
 
 
-async def analize_video(url: str) -> None:
-    await download_tiktok_upload_files_and_update_db(url)
+def save_agent_source() -> AgentSource:
+    agent_source = AgentSource(type=SourceType.TIKTOK, status="processing", statusDescription="Extracting tiktok data...")
+    return agent_sources_repository.save_source(agent_source)
+
+
+async def analize_video(url: str, agent_source: AgentSource) -> AgentSource:
+    # Run the potentially blocking operation in a thread pool
+    # This prevents it from blocking the event loop
+    asyncio.create_task(_run_analysis(url, agent_source))
+
+    return agent_source
+
+
+async def _run_analysis(url: str, agent_source: AgentSource) -> None:
+    try:
+        await download_tiktok_upload_files_and_update_db(url, agent_source)
+    except Exception as e:
+        print(f"Error in background analysis: {e}")
+        _save_source_status(agent_source, f"Error during analysis: {str(e)}")
+        agent_sources_repository.save_source(agent_source)
 
 
 async def save_tiktok_data(urls: list[str]) -> None:
@@ -21,48 +39,64 @@ async def save_tiktok_data(urls: list[str]) -> None:
         print("saved tiktok data", saved_id)
 
 
-async def download_tiktok_upload_files_and_update_db(url: str) -> None:
-    # This function only download video in memory, not save in disk.
+async def download_tiktok_upload_files_and_update_db(url: str, agent_source: AgentSource) -> None:
+    # 2. Extract tiktok data
     username, video_id = extract_tiktok_url_components(url)
-    print(f" 🎞️ Starting download username: {username}, video_id: {video_id}")
-    result = await tiktok_downloader.get_video(url)
+    _save_source_status(agent_source, f"Extracting tiktok video data, id {video_id} from username: {username}...")
 
-    agent_source = AgentSource(type=SourceType.TIKTOK)
+    parsed_data, tiktok_data = await tiktok_downloader.get_titktok_video_data(url)
+    agent_source.relationId = parsed_data.get("id")
+    # Donwload video
+    agent_source.name = tiktok_data.get("author", {}).get("nickname") + " - " + tiktok_data.get("desc")[0:20]
+    agent_source.description = tiktok_data.get("desc")
+    _save_source_status(agent_source, "Tiktok Video Found! Downloading video...")
+    video_bytes = await tiktok_downloader.download_tiktok_media(parsed_data)
 
-    print(" * 1) downloading video and uploading to cloud")
-    video_bytes = await tiktok_downloader.download_tiktok_media(result)
-
+    # Upload video to cloud
+    _save_source_status(agent_source, "Uploading video to cloud storage...")
     video_storage_ref = f"tiktok/{username}/videos/{video_id}.mp4"
     storage_data = await tiktok_downloader.upload_media_to_storage(video_storage_ref, video_bytes)
-    print("☁️ downloaded and uploaded to cloud", storage_data)
+    # Save video source
+    _save_source_status(agent_source, "Video uploaded to cloud storage! Saving database..." + str(storage_data))
     video_source = VideoSource(idPlatform=video_id, video=storage_data)
     agent_source.video = video_source
     agent_source = agent_sources_repository.save_source(agent_source)
-    print("🔍 saved in db", agent_source)
 
-    print(" * 2) extracting frames and uploading to cloud")
+    # Extract Images frames.
+    _save_source_status(agent_source, "Extracting frames from video...")
 
     storage_frames_dir = f"tiktok/{username}/frames/{video_id}"
     screenshots = video_extraction.extract_frames_from_video_bytes(video_bytes)
-    print("🖼️ extracted screenshots", len(screenshots))
+
+    # Upload frames to cloud
+    _save_source_status(agent_source, f"Uploading {len(screenshots)} frames to cloud storage...")
     storage_screnshots = video_extraction.upload_frames_to_storage(screenshots, storage_frames_dir)
-    print("Ready to save in db", storage_screnshots)
     video_frames = [ImageSource(image=frame, description="", title="") for frame in storage_screnshots]
     agent_source.video.frames = video_frames
-    agent_source = agent_sources_repository.save_source(agent_source)
 
-    print(" * 3) Extract Audio and Transcription")
+    # Extracting and uploading audio
+    _save_source_status(agent_source, "Extracting audio from video...")
     audio_bytes = video_extraction.extract_audio_from_video_bytes(video_bytes)
     audio_storage_ref = f"tiktok/{username}/audio/{video_id}.mp3"
     audio_storage_data = await tiktok_downloader.upload_media_to_storage(audio_storage_ref, audio_bytes)
-    print("🎤 extracted audio, uploaded to cloud and starting transcription", audio_storage_data)
+    agent_source.video.audio = audio_storage_data
+    # Starting transcription.
+    _save_source_status(agent_source, "Audio Extracted,  starting transcription" + str(audio_storage_data))
 
     transcription = groq_whisper.transcribe_audio_with_bytes(audio_bytes)
     transcription_object = {"text": transcription.text, "language": transcription.language, "segments": transcription.segments, "duration": transcription.duration}
-    print("🎤 transcription", transcription_object)
+    _save_source_status(agent_source, "🎤 transcription" + str(transcription_object))
     agent_source.video.transcription = transcription_object
+
+    # Process completed
+    _save_source_status(agent_source, "Process completed")
+    return agent_source
+
+
+def _save_source_status(agent_source: AgentSource, status_description: str) -> AgentSource:
+    agent_source.statusDescription = status_description
+    print(agent_source.statusDescription)
     agent_source = agent_sources_repository.save_source(agent_source)
-    print("Process completed", agent_source)
     return agent_source
 
 
