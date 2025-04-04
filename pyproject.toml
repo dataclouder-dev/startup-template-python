@@ -1,32 +1,32 @@
 [tool.poetry]
-name = "dataclouder-template-python"
+name = "startup-template-python"
 version = "0.0.1"
 description = "python template for new projects"
-authors = ["adamo jordan <adamo.figueroa@gmail.com>"]
+authors = ["datataclouder  <adamo.figueroa@gmail.com>"]
 readme = "README.md"
 package-mode = false
 
 
 [tool.poetry.dependencies]
-python = "^3.12"
-fastapi = { extras = ["all"], version = "0.110.1" }
-uvicorn = { extras = ["standard"], version = "^0.29.0" }
-oauth2client = "^4.1.3"
-google-cloud-texttospeech = "^2.24.0"
-google-generativeai = "^0.8.4"
-python-dotenv = "^1.0.1"
-fal-client = "^0.5.7"
-pillow = "^10.4.0"
-pydantic-ai = "^0.0.24"
-dataclouder-tts = "^0.0.6"
-pymongo = "^4.10.1"
-dataclouder-core = "^0.0.5"
-dataclouder-agent-cards = "^0.0.12"
-dataclouder-conversation-ai-cards = "^0.0.9"
-groq = "^0.18.0"
-pandas = "^2.2.3"
-google-cloud-storage = "^3.1.0"
-dataclouder-mongo = "^0.0.6"
+python = "^3.12"                                         # Python version
+fastapi = { extras = ["all"], version = "0.110.1" }      # Python web framework
+uvicorn = { extras = ["standard"], version = "^0.29.0" } # ASGI server
+oauth2client = "^4.1.3"                                  # for authentication with Google Cloud
+google-cloud-texttospeech = "^2.24.0"                    # To generate audio from text
+google-generativeai = "^0.8.4"                           # To Use Gemini and other vertex AI models
+google-dotenv = "^1.0.1"                                 # To use .env files
+fal-client = "^0.5.7"                                    # To generate some images with different models
+pillow = "^10.4.0"                                       # To help image manipulation
+pydantic-ai = "^0.0.52"                                  # For Agentic Framework, AI models
+pymongo = "^4.10.1"                                      # To connect with mongo db
+groq = "^0.18.0"                                         # To connect with Groq AI models
+pandas = "^2.2.3"                                        # To help with data manipulation
+google-cloud-storage = "^3.1.0"                          # To connect with Google Cloud Storage
+dataclouder-tts = "^0.0.6"                               # To generate audio from text
+dataclouder-core = "^0.0.5"                              # To connect with core services
+dataclouder-agent-cards = "^0.0.12"                      # To connect with agent cards
+dataclouder-conversation-ai-cards = "^0.0.9"             # To connect with conversation cards
+dataclouder-mongo = "^0.0.6"                             # To connect with mongo db
 
 
 [tool.poetry.group.dev.dependencies]

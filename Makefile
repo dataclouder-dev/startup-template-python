@@ -1,8 +1,8 @@
 include .env
 
 # Variables for deployment replace [startup-template] for your project name
-PROJECT_NAME ?= startup-template
-PROJECT_ID ?= $(PROJECT_NAME)-dev
+PROJECT_NAME ?= dataclouder-dev
+PROJECT_ID ?= $(PROJECT_NAME)
 IMAGE_NAME ?= $(PROJECT_NAME)-python-image
 SERVICE_NAME ?= $(PROJECT_NAME)-python-server
 REGION ?= us-central1
@@ -71,8 +71,19 @@ gcp-deploy-service:
 		--set-env-vars "$${ENV_VARS}"
 
 
+# Deploy without local env vars (Not used as default.)
+gcp-deploy-service-no-local-env-vars:
+	@echo "-> Deploying Lastest Build $(PROJECT_ID)/$(IMAGE_NAME) to Google Cloud Run... "
+	gcloud run deploy $(SERVICE_NAME) \
+		--image gcr.io/$(PROJECT_ID)/$(IMAGE_NAME) \
+		--project $(PROJECT_ID) \
+		--region $(REGION) \
+		--platform managed \
+		--allow-unauthenticated \
 
-deploy: 
+
+deploy:
+	@echo "-> Deploying Lastest Build $(PROJECT_ID)/$(IMAGE_NAME) -> $(PROJECT_NAME) to Google Cloud Run... "
 	make gcp-build
 	make gcp-deploy-service
 
@@ -104,4 +115,17 @@ update-dc:
 	@echo "✅ Dataclouder packages updated successfully!"
 
 
+# 🔄 Reinstall everything in a fresh virtual environment
+reinstall:
+	@echo "🧹 Removing existing virtual environments..."
+	poetry env remove --all
+	@echo "🗑️ Cleaning up Python cache files..."
+	make clean
+	@echo "🔄 Creating a fresh virtual environment and installing dependencies..."
+	poetry install
+	pip install -r requirements.txt
+	@echo "✅ Fresh installation completed successfully!"
 
+force-reinstall:
+	poetry lock
+	poetry install

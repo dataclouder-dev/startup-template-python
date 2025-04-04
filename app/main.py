@@ -15,8 +15,10 @@ from app.image_gen import image_gen
 from app.llm import llm_router
 from app.modules.mongo import mongo_controller
 from app.tts import tts_router
-from app.video_analizer.controllers import tiktok_controller, video_analizer_controller
-from app.video_generator.controller import video_controller
+
+# TODO: refactor this come from another service. 
+# from app.video_analizer.controllers import tiktok_controller, video_analizer_controller
+# from app.video_generator.controller import video_controller
 
 app = FastAPI()
 
@@ -37,9 +39,9 @@ app.include_router(mongo_controller.router)
 app.include_router(agent_controller.router)
 app.include_router(generic_controller.router)
 app.include_router(tts_controller.router)
-app.include_router(video_analizer_controller.router)
-app.include_router(tiktok_controller.router)
-app.include_router(video_controller.router)
+# app.include_router(video_analizer_controller.router)
+# app.include_router(tiktok_controller.router)
+# app.include_router(video_controller.router)
 
 
 @app.get("/", response_class=HTMLResponse)
