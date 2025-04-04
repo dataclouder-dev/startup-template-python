@@ -14,7 +14,7 @@ uvicorn = { extras = ["standard"], version = "^0.29.0" } # ASGI server
 oauth2client = "^4.1.3"                                  # for authentication with Google Cloud
 google-cloud-texttospeech = "^2.24.0"                    # To generate audio from text
 google-generativeai = "^0.8.4"                           # To Use Gemini and other vertex AI models
-google-dotenv = "^1.0.1"                                 # To use .env files
+python-dotenv = "^1.0.1"                                 # To use .env files
 fal-client = "^0.5.7"                                    # To generate some images with different models
 pillow = "^10.4.0"                                       # To help image manipulation
 pydantic-ai = "^0.0.52"                                  # For Agentic Framework, AI models
