@@ -1,10 +1,11 @@
 include .env
 
-# Variables for deployment
-PROJECT_ID ?= dataclouder-dev
-IMAGE_NAME ?= python-app-image
+# Variables for deployment replace [startup-template] for your project name
+PROJECT_NAME ?= startup-template
+PROJECT_ID ?= $(PROJECT_NAME)-dev
+IMAGE_NAME ?= $(PROJECT_NAME)-python-image
+SERVICE_NAME ?= $(PROJECT_NAME)-python-server
 REGION ?= us-central1
-SERVICE_NAME ?= python-server
 
 
 .PHONY: deploy build run-local install clean help
@@ -39,7 +40,6 @@ merge-upstream:
 
 	
 install:
-	pip install -r requirements.txt
 	poetry install
 
 # ☁️ Google Cloud Scripts 

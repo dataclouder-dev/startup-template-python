@@ -112,6 +112,14 @@ Once running, access the API documentation at: http://127.0.0.1:8000/docs
 
 ### Automated Deployment with Cloud Build 🤖
 
+Change project name in `Makefile`. 
+then just run 
+make deploy 
+
+Note: if you want to automate multiple environment remember that makefile just replace if the variables in the .env dont exist so adding this variables in .env will have priority. you can add per every environment
+
+
+
 **Note:** Before setting up automated deployment, we recommend performing one manual deployment to verify everything works correctly. Initial deployments require setting up Cloud Run service variables, while subsequent deployments do not. Also note that manual deployments use the default GCR repository for artifacts, while automated deployments use a custom repository.
 
 Steps:

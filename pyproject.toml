@@ -23,16 +23,11 @@ pymongo = "^4.10.1"
 dataclouder-core = "^0.0.5"
 dataclouder-agent-cards = "^0.0.12"
 dataclouder-conversation-ai-cards = "^0.0.9"
-moviepy = "^2.1.2"
-opencv-python = "^4.11.0.86"                             #for video extraction
 groq = "^0.18.0"
-yt-dlp = "^2025.2.19"
 pandas = "^2.2.3"
-seaborn = "^0.13.2"
 google-cloud-storage = "^3.1.0"
 dataclouder-mongo = "^0.0.6"
-demucs = "^4.0.1"
-pydub = "^0.25.1"
+
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.9.6"
