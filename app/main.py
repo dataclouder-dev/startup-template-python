@@ -1,8 +1,11 @@
 import os
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from dataclouder_tts import tts_controller
 from dc_agent_cards.controllers import agent_controller
-from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
@@ -14,9 +17,6 @@ from app.modules.mongo import mongo_controller
 from app.tts import tts_router
 from app.video_analizer.controllers import tiktok_controller, video_analizer_controller
 from app.video_generator.controller import video_controller
-
-load_dotenv()
-
 
 app = FastAPI()
 

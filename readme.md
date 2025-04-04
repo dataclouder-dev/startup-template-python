@@ -1,13 +1,13 @@
-# DataClouder Python Template
+# 🐍 Startup Template Python
 
-### Description
+### 📝 Description
 
 This repository contains additional services required by the DataClouder template. For reference implementations, check out our other templates:
 
 - [DataClouder Angular Template](https://github.com/dataclouder-dev/dataclouder-template-angular)
 - [DataClouder Node Template](https://github.com/dataclouder-dev/dataclouder-template-node)
 
-## Getting Started
+## 🚀 Getting Started
 
 ### Clone the Project
 
@@ -15,26 +15,39 @@ This repository contains additional services required by the DataClouder templat
 git clone https://github.com/dataclouder-dev/dataclouder-template-python [your-project-name]
 ```
 
-## 🛠️ Prerequisites
+or use the button on github right top corner CREATE TEMPLATE
+
+## ✅ Prerequisites
 
 - Python >= 3.11
+- Make >= 3.0.0 (Optional but highly recommended)
 - Poetry >= 2.0.0 (Optional but recommended)
 - Docker (Optional)
 - Google Cloud credentials and environment variables
-- Access to Polilan repository
+- MongoDB credentials
 
-## 🚀 Installation Options
+## ⚙️ Installation Options
 
-### Option 1: Using Makefile (Recommended)
+* .env file is required, you need to create it but can copy and paste from .env.example, then set the variables
+
+* Google service account file is required and placed it in the `./.cred` folder at the project root
+
+check documentation how to create service account [here](https://cloud.google.com/iam/docs/service-accounts-create)
+
+You should be ready to go
+
+
+### Option 1: Using Makefile (Recommended)  M
 
 Requires Poetry and Docker to be installed.
 
 ```bash
+make install # Only the first time
 # Single command setup (Work in Progress)
 make start
 ```
 
-### Option 2: Traditional Setup
+### Option 2: Traditional Setup 🚶
 
 #### 1. Environment Setup
 ```bash
@@ -66,23 +79,26 @@ uvicorn app.main:app --reload
 
 # Option 2: Using FastAPI development server
 fastapi dev app/main.py
+
+# Option 3) Recommended
+make start
 ```
 
 Once running, access the API documentation at: http://127.0.0.1:8000/docs
 
-## 🌎 Deployment Environments
+## ☁️ Deployment Environments
 
 | Environment | URL |
 |------------|-----|
 | QA | https://..... |
 | Production | https://..... |
 
-## Deployment Options
+## 🚢 Deployment Options
 
-### Manual Deployment
+### Manual Deployment 👨‍💻
 
 1. Set environment variables:
-   - Add `.env` file to the project root
+   - Ensure the `.env` file is present in the project root
 
 2. Build Docker image:
    ```bash
@@ -94,7 +110,7 @@ Once running, access the API documentation at: http://127.0.0.1:8000/docs
    make gcp-deploy
    ```
 
-### Automated Deployment with Cloud Build
+### Automated Deployment with Cloud Build 🤖
 
 **Note:** Before setting up automated deployment, we recommend performing one manual deployment to verify everything works correctly. Initial deployments require setting up Cloud Run service variables, while subsequent deployments do not. Also note that manual deployments use the default GCR repository for artifacts, while automated deployments use a custom repository.
 
@@ -106,9 +122,9 @@ Steps:
 5. Optional: Add permissions to the service account (Logs Writer, Cloud Run Admin, or default logs only)
 6. Add the repository in Artifact Registry (recommended: add policies to remove old versions)
 
-## Development Tools
+## 🔧 Development Tools
 
-### Poetry Package Manager
+### Poetry Package Manager 📦
 
 Poetry is the recommended package manager for this project. Here are some useful commands:
 
@@ -122,7 +138,14 @@ poetry publish            # Publish the package
 poetry show               # Check dependencies
 ```
 
-### Docker Commands
+### Merge Upstream Updates 🔄
+You can create new project but, if you want to get updates from the template, you can run
+
+```bash
+make merge-upstream
+```
+
+### Docker Commands 🐳
 
 ```bash
 # Build the image
@@ -132,7 +155,7 @@ docker build -t dc_python_server_image .
 docker run -it -p 8080:8080 dc_python_server_image
 ```
 
-### Code Quality Tools
+### Code Quality Tools ✨
 
 We highly recommend using [Ruff](https://pypi.org/project/ruff/), a fast Python linter and formatter that replaces multiple tools like flake8. Settings are configured in the `pyproject.toml` file.
 
@@ -148,7 +171,3 @@ ruff check --fix --format .  # Fix issues and format code
 ```
 
 For more information about Ruff rules and configuration, visit the [official documentation](https://docs.astral.sh/ruff/).
-
-
-
-

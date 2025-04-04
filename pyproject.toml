@@ -24,7 +24,7 @@ dataclouder-core = "^0.0.5"
 dataclouder-agent-cards = "^0.0.12"
 dataclouder-conversation-ai-cards = "^0.0.9"
 moviepy = "^2.1.2"
-opencv-python = "^4.11.0.86"                                #for video extraction
+opencv-python = "^4.11.0.86"                             #for video extraction
 groq = "^0.18.0"
 yt-dlp = "^2025.2.19"
 pandas = "^2.2.3"
@@ -40,41 +40,62 @@ ipykernel = "^6.29.5"
 
 [tool.ruff]
 line-length = 180
-fix = true  # Enable auto-fixing
-unsafe-fixes = false  # Enable unsafe fixes
+fix = true           # Enable auto-fixing
+unsafe-fixes = false # Enable unsafe fixes
 
 
 [tool.ruff.lint]
 select = [
-    "E",  # pycodestyle errors
-    "W",  # pycodestyle warnings
-    "F",  # pyflakes
-    "I",  # isort
-    "C",  # flake8-comprehensions
-    "B",  # flake8-bugbear
-    "PYI", # pyright static type checker
-    "UP", # pyupgrade
-    "I", # isort
-    "PL", # pylint
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "C",    # flake8-comprehensions
+    "B",    # flake8-bugbear
+    "PYI",  # pyright static type checker
+    "UP",   # pyupgrade
+    "I",    # isort
+    "PL",   # pylint
     "PLC",
     "PLW",
     "PLE",
     "PLC",
     "ANN",
-    "FAST", 
-    "TCH"
-    ]
+    "FAST",
+    "TCH",
+]
 
-ignore = ["TC004", "TC002"]  # Add this line
+ignore = ["TC004", "TC002", "E402"] # Add this line
 
 
 [tool.ruff.lint.extend-per-file-ignores]
 "*.ipynb" = [
-    "E402",  "E501", "W293", "W291", "B007", "B006", "B018",
-    "F841", "F821", "W191", "TC001", "ANN201", "ANN001", "ANN204", "ANN401",
-    "UP006", "UP035", "SIM115", "SIM118", "PLR0913" , "PLR2004" , "PLR2004" , "PLW2901", "I001", "ANN202"
+    "E402",
+    "E501",
+    "W293",
+    "W291",
+    "B007",
+    "B006",
+    "B018",
+    "F841",
+    "F821",
+    "W191",
+    "TC001",
+    "ANN201",
+    "ANN001",
+    "ANN204",
+    "ANN401",
+    "UP006",
+    "UP035",
+    "SIM115",
+    "SIM118",
+    "PLR0913",
+    "PLR2004",
+    "PLR2004",
+    "PLW2901",
+    "I001",
+    "ANN202",
 ]
-
 
 
 [build-system]

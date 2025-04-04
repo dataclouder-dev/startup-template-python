@@ -22,6 +22,21 @@ start:
 	poetry run ruff check .
 	poetry run uvicorn app.main:app --reload
 
+merge-upstream:
+	@echo "Fetching and merging updates from upstream repository..."
+	@if ! git config remote.upstream.url > /dev/null; then \
+		echo "Adding upstream remote..."; \
+		git remote add upstream https://github.com/dataclouder-dev/startup-template-python.git; \
+	fi
+	git fetch upstream
+	git checkout main
+	@echo "Merging upstream/main into local main branch..."
+	git merge upstream/main --allow-unrelated-histories || { \
+		echo "Merge conflicts detected. Please resolve conflicts and complete the merge manually."; \
+		echo "After resolving conflicts, commit changes and push to origin."; \
+		exit 1; \
+	}
+
 	
 install:
 	pip install -r requirements.txt
