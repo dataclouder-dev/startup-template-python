@@ -20,8 +20,8 @@ help:
 
 # Run the FastAPI application in development mode
 start:
-	poetry run ruff check .
-	poetry run uvicorn app.main:app --reload
+	uv run ruff check .
+	uv run uvicorn app.main:app --reload
 
 merge-upstream:
 	@echo "Fetching and merging updates from upstream repository..."
@@ -40,7 +40,7 @@ merge-upstream:
 
 	
 install:
-	poetry install
+	uv venv && uv sync
 
 # ☁️ Google Cloud Scripts 
 
@@ -104,28 +104,27 @@ clean:
 	find . -type f -name "*.pyc" -delete 
 
 make show:
-	poetry show
+	uv pip list
 
 # 📦 Package Management Scripts
 update-dc:
-	@echo "if new library is not working check: poetry cache clear . --all -> poetry update"
-	poetry cache clear . --all
-	@echo "Updating Dataclouder packages to latest versions..."
-	poetry add dataclouder-conversation-ai-cards@latest dataclouder-tts@latest dataclouder-core@latest dataclouder-mongo@latest
-	@echo "✅ Dataclouder packages updated successfully!"
+	@echo "Assuming Dataclouder package versions in pyproject.toml have been manually updated."
+	@echo "Syncing environment with pyproject.toml..."
+	uv sync
+	@echo "✅ Environment synced with pyproject.toml."
+	@echo "If you updated dependencies, consider running 'uv lock' and committing pyproject.toml and uv.lock."
 
 
 # 🔄 Reinstall everything in a fresh virtual environment
 reinstall:
 	@echo "🧹 Removing existing virtual environments..."
-	poetry env remove --all
+	rm -rf .venv
 	@echo "🗑️ Cleaning up Python cache files..."
 	make clean
 	@echo "🔄 Creating a fresh virtual environment and installing dependencies..."
-	poetry install
-	pip install -r requirements.txt
+	uv venv && uv sync
 	@echo "✅ Fresh installation completed successfully!"
 
 force-reinstall:
-	poetry lock
-	poetry install
+	uv lock
+	uv sync

@@ -2,11 +2,7 @@
 
 FROM python:3.12.7-slim-bookworm AS builder
 
-RUN pip install poetry==1.8.3
-
-ENV POETRY_NO_INTERACTION=1 
-ENV POETRY_VIRTUALENVS_IN_PROJECT=1 
-ENV POETRY_VIRTUALENVS_CREATE=1 
+RUN pip install uv
 
 WORKDIR /app
 
@@ -14,7 +10,8 @@ WORKDIR /app
 COPY . .
 
 # Install dependencies
-RUN poetry install --no-root
+RUN uv venv --python 3.12.7 && \
+    uv sync --locked --no-dev
 
 # Runtime stage
 # Se asume que /.venv existe en la imagen anterior en el path /app/.venv, tiene las dependencias instaladas. 
