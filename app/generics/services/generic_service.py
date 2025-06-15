@@ -12,5 +12,5 @@ def find_filtered_generics(filters: FiltersConfig) -> GenericModel:
     return generic_repository.find_filtered_generics(filters)
 
 
-def delete_generic(id: str) -> GenericModel:
-    return generic_repository.delete_generic(id)
+def delete_generic(generic_id: str) -> GenericModel:
+    return generic_repository.delete_generic(generic_id)

@@ -40,7 +40,7 @@ merge-upstream:
 
 	
 install:
-	uv venv && uv sync
+	uv venv && uv sync --extra dev
 
 # ☁️ Google Cloud Scripts 
 

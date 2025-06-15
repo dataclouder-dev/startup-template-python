@@ -10,5 +10,3 @@ class GenericModel(BaseModel):
     description: str
     type: Literal["gen1", "gen2", "gen3"]
     relation: dict
-    # created_at: datetime
-    # updated_at: datetime

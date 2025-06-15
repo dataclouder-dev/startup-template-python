@@ -34,13 +34,36 @@ line-length = 180
 fix = true           # Enable auto-fixing
 unsafe-fixes = false # Enable unsafe fixes
 
-
-ignore = ["TC004", "TC002", "E402"]
+[tool.ruff.lint]
+select = ['ALL']
+ignore = [
+    "TC004",
+    "TC002",
+    "E402",
+    "T201",
+    "D100",
+    "D103",
+    "PTH123",
+    "INP001",
+    "D415",
+    "FBT001",
+    "TRY003",
+    "TRY002",
+    "D101",
+    "S311",
+    "FBT002",
+    "TD003",
+    "D102",
+    "FIX002",
+]
 
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = ["ruff>=0.11.13"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["app"]

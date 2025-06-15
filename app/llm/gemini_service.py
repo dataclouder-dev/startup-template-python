@@ -39,48 +39,53 @@ def get_models() -> list[dict]:
     return results
 
 
-# for m in genai.list_models():
-#   if 'generateContent' in m.supported_generation_methods:
-#     print(m.name)
-
-
 class GeminiLLM:
-    """Wrapper for google.generativeai.GenerativeModel
+    """Wrapper for google.generativeai.GenerativeModel.
+
     models/gemini-1.5-flash
     gemini-1.5-pro-latest
-    check models using method genai.list_models()
+    check models using method genai.list_models().
     """
 
     client = None
 
     def __init__(self, model_name: str = "models/gemini-1.5-flash") -> None:
-        # self.model_name = model_name if model_name in ['models/gemini-1.5-flash', 'models/gemini-1.5-pro'] else 'models/gemini-1.5-flash'
-        self.model_name = model_name or "models/gemini-1.5-flash"
+        """Initialize the GeminiLLM client.
+
+        Args:
+            model_name: The name of the Gemini model to use.
+                        Defaults to "models/gemini-1.5-flash".
+
+        """
+        self.model_name = model_name
         print("Creating with model ", self.model_name)
         self.client = genai.GenerativeModel(self.model_name)
 
     def chat(self, messages: list[ChatMessageDict], return_tokens: bool = False, return_json: bool = False) -> str:
-        """Entender: no funciona como OpenAI, la conversación solo va uno y uno model y user, por eso en el primer model incluyo 2 partes,
-        system promp y primer assistant interaction"""
+        """Process a chat conversation with the Gemini model.
+
+        Note: Gemini's conversation model differs from OpenAI's. It expects
+        a strict user-model turn-by-turn interaction. This implementation
+        adapts by potentially including the system prompt and the initial
+        assistant interaction within the first model part if necessary.
+        """
         messages = transform_to_gemini(messages)
 
-        # model = genai.GenerativeModel('gemini-1.0-pro-latest')
         if return_json:
-            generationConfig = {"response_mime_type": "application/json"}
-            response = self.client.generate_content(messages, generation_config=generationConfig)
+            generation_config = {"response_mime_type": "application/json"}
+            response = self.client.generate_content(messages, generation_config=generation_config)
         else:
             response = self.client.generate_content(messages)
 
         if return_tokens:
             # Google no ofrece una forma nativa de contar los tokens.
-            # TODO: creo que puedo contar los de salida, con la función pero input se va a volver complicado iterar toda la conversación
+            # TODO(@adamo): creo que puedo contar los de salida, con la función pero input se va a volver complicado iterar toda la conversación
             self.client.count_tokens(messages)
             return response.text, {"input": 0, "output": 0, "total": 0}
 
         return response.text
 
     def complete(self, message: str, return_json: bool = False) -> str:
-        # messages = transform_to_gemini(messages)
         safety_settings = {
             HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_ONLY_HIGH,
             HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_ONLY_HIGH,
@@ -89,8 +94,8 @@ class GeminiLLM:
             # HarmCategory.HARM_CATEGORY_UNSPECIFIED: HarmBlockThreshold.BLOCK_ONLY_HIGH,
         }
         if return_json:
-            generationConfig = {"response_mime_type": "application/json"}
-            response = self.client.generate_content(message, generation_config=generationConfig)
+            generation_config = {"response_mime_type": "application/json"}
+            response = self.client.generate_content(message, generation_config=generation_config)
         else:
             response = self.client.generate_content(message, safety_settings=safety_settings)
 

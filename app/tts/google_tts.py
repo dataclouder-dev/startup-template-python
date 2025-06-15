@@ -5,10 +5,6 @@ from typing_extensions import TypedDict
 
 from app.tts.classes import AudioSpeed, GoogleVoiceHQOptions, GoogleVoiceOptions, SynthAudioOptions, VoiceCode
 
-# from app.core.app_models import SynthAudioOptions
-# from app.core.exception import AppException
-# from resources.enviroment import creds
-
 
 class VoiceSetttings(TypedDict):
     voiceName: str
@@ -30,8 +26,8 @@ def get_speech(text: str, voice_name: VoiceCode | None = None, options: SynthAud
         print("Voice name is not None")
         voice = [item for item in GoogleVoiceOptions if item["id"] == voice_name]
         if len(voice) == 0:
-            # raise AppException(error_message=f"Voice {voice_name} not found")
-            raise Exception(f"Voice {voice_name} not found")
+            msg = f"Voice {voice_name} not found"
+            raise Exception(msg)
 
         language_code = voice[0]["lang"]
 
@@ -40,17 +36,11 @@ def get_speech(text: str, voice_name: VoiceCode | None = None, options: SynthAud
     speaking_rate = 1
 
     if options and "Journey" not in voice_name:
-        if options.speed_rate and options.speed_rate > 0:
-            speaking_rate = options.speed_rate
-        else:
-            speaking_rate = get_speed_rate(options.speed)
+        speaking_rate = options.speed_rate if options.speed_rate and options.speed_rate > 0 else get_speed_rate(options.speed)
 
     client = texttospeech.TextToSpeechClient()
 
-    if is_ssml:
-        synthesis_input = texttospeech.SynthesisInput(ssml=text)
-    else:
-        synthesis_input = texttospeech.SynthesisInput(text=text)
+    synthesis_input = texttospeech.SynthesisInput(ssml=text) if is_ssml else texttospeech.SynthesisInput(text=text)
 
     voice = texttospeech.VoiceSelectionParams(language_code=language_code, name=voice_name)
 

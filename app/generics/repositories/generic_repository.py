@@ -1,30 +1,29 @@
 from bson import ObjectId
 from dataclouder_core.models.models import FiltersConfig
+from dataclouder_mongo.mongo import get_db
 
 from app.generics.models.generic_model import GenericModel
-from app.modules.mongo.mongo import db
 
 col_name = "generics"
 
+db = get_db()
 
-def find_generics(id: str) -> dict:
-    """Get words"""
+
+def find_generics(generic_id: str) -> dict:
+    """Get generic by id."""
     collection = db[col_name]
-    result = collection.find_one({"_id": ObjectId(id)})
-
-    return result
+    return collection.find_one({"_id": ObjectId(generic_id)})
 
 
 def find_filtered_generics(filters: FiltersConfig) -> list:
-    """Get words"""
+    """Get generics filtered."""
     print(filters)
     collection = db[col_name]
-    result = collection.find(filters.model_dump())
-    return result
+    return collection.find(filters.model_dump())
 
 
 def save_generic(generic: GenericModel) -> GenericModel:
-    """Save generic insert if not exists, or update if exists"""
+    """Save generic insert if not exists, or update if exists."""
     collection = db[col_name]
 
     # Convert the model to dict for manipulation
@@ -44,8 +43,8 @@ def save_generic(generic: GenericModel) -> GenericModel:
     return result
 
 
-def delete_generic(id: str) -> GenericModel:
-    """Delete generic"""
+def delete_generic(generic_id: str) -> dict:
+    """Delete generic."""
     collection = db[col_name]
-    collection.delete_one({"_id": ObjectId(id)})
+    collection.delete_one({"_id": ObjectId(generic_id)})
     return {"message": "Generic deleted"}

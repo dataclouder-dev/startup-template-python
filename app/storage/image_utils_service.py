@@ -1,5 +1,4 @@
 from io import BytesIO
-from typing import Union
 
 import numpy as np
 import requests
@@ -8,14 +7,13 @@ from PIL import Image
 COLOR_SHAPE = 3
 
 
-def transform_to_webp_bytes(image_data: Union[BytesIO, bytes, np.ndarray]) -> BytesIO:
+def transform_to_webp_bytes(image_data: BytesIO | bytes | np.ndarray) -> BytesIO:
     # Handle numpy array (from cv2/matplotlib frames)
     if isinstance(image_data, np.ndarray):
-        if isinstance(image_data, np.ndarray):
-            # Convert BGR to RGB before creating PIL Image
-            if len(image_data.shape) == COLOR_SHAPE and image_data.shape[2] == COLOR_SHAPE:  # Check if it's a color image
-                image_data = image_data[:, :, ::-1]  # BGR to RGB conversion
-            pil_image = Image.fromarray(image_data)
+        # Convert BGR to RGB before creating PIL Image
+        if len(image_data.shape) == COLOR_SHAPE and image_data.shape[2] == COLOR_SHAPE:  # Check if it's a color image
+            image_data = image_data[:, :, ::-1]  # BGR to RGB conversion
+        pil_image = Image.fromarray(image_data)
     else:
         # Handle BytesIO or bytes as before
         if isinstance(image_data, bytes):
@@ -28,8 +26,7 @@ def transform_to_webp_bytes(image_data: Union[BytesIO, bytes, np.ndarray]) -> By
 
 
 def download_image_to_memory(url: str) -> BytesIO:
-    response = requests.get(url)
+    response = requests.get(url, timeout=10)  # Added a 10-second timeout
     response.raise_for_status()  # Raise an exception if the request was unsuccessful
 
-    image_data = BytesIO(response.content)
-    return image_data
+    return BytesIO(response.content)

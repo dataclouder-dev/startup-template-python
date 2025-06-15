@@ -14,22 +14,20 @@ async def get_generic() -> dict:
     return {"hi", "hello"}
 
 
-@router.get("/{id}")
+@router.get("/{generic_id}")
 @handler_exception
-async def get_generic_by_id(id: str) -> dict:
-    return {"id": id}
+async def get_generic_by_id(generic_id: str) -> dict:
+    return generic_service.find_generics(generic_id)
 
 
 @router.post("/")
 @handler_exception
 async def save_generic(generic: GenericModel) -> GenericModel:
-    generic = generic_service.save_generic(generic)
-    return generic
+    return generic_service.save_generic(generic)
 
 
 @router.post("/query")
 @handler_exception
 async def find_filtered_generics(filters: FiltersConfig) -> list:
     print(filters)
-    generic = generic_service.find_filtered_generics(filters)
-    return generic
+    return generic_service.find_filtered_generics(filters)
