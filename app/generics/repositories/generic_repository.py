@@ -6,25 +6,23 @@ from app.generics.models.generic_model import GenericModel
 
 col_name = "generics"
 
-db = get_db()
-
 
 def find_generics(generic_id: str) -> dict:
     """Get generic by id."""
-    collection = db[col_name]
+    collection = get_db()[col_name]
     return collection.find_one({"_id": ObjectId(generic_id)})
 
 
 def find_filtered_generics(filters: FiltersConfig) -> list:
     """Get generics filtered."""
     print(filters)
-    collection = db[col_name]
+    collection = get_db()[col_name]
     return collection.find(filters.model_dump())
 
 
 def save_generic(generic: GenericModel) -> GenericModel:
     """Save generic insert if not exists, or update if exists."""
-    collection = db[col_name]
+    collection = get_db()[col_name]
 
     # Convert the model to dict for manipulation
     generic_dict = generic.model_dump()
@@ -45,6 +43,6 @@ def save_generic(generic: GenericModel) -> GenericModel:
 
 def delete_generic(generic_id: str) -> dict:
     """Delete generic."""
-    collection = db[col_name]
+    collection = get_db()[col_name]
     collection.delete_one({"_id": ObjectId(generic_id)})
     return {"message": "Generic deleted"}
