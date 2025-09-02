@@ -208,24 +208,39 @@ deploy-service:
 # ==============================================================================
 # DEVELOPMENT & UTILITY TARGETS
 # ==============================================================================
+# Install dependencies using uv
+install:
+	@echo "-> 📦 Installing dependencies..."
+	$(MAKE_VERBOSE) uv venv
+	$(MAKE_VERBOSE) uv sync
+
+# Run the application using uvicorn
 start:
-	npm run start:dev
+	@echo "-> 🚀 Starting application..."
+	$(MAKE_VERBOSE) uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
-update-dc:
-	npm run update:dc
+# Lint the code using ruff
+lint:
+	@echo "-> 🎨 Linting code..."
+	$(MAKE_VERBOSE) uv run ruff check .
 
-update-all:
-	ncu -u
+# Format the code using ruff
+format:
+	@echo "-> 🎨 Formatting code..."
+	$(MAKE_VERBOSE) uv run ruff format .
 
-publish-mongo:
-	npm run publish:mongo
+# Alias for building docker image
+docker-build: ._build-docker
 
-publish-google-cloud:
-	npm run publish:google-cloud
+# Run the application in a docker container
+docker-run:
+	@echo "-> 🐳 Running application in docker..."
+	$(MAKE_VERBOSE) docker run -it -p 8000:8080 $(IMAGE_NAME):latest
 
 clean:
-	@echo "🧹 Removing node_modules..."
-	$(MAKE_VERBOSE) rm -rf node_modules
+	@echo "🧹 Removing virtual environment and __pycache__ files..."
+	$(MAKE_VERBOSE) rm -rf .venv
+	$(MAKE_VERBOSE) find . -type d -name "__pycache__" -exec rm -r {} +
 
 merge-upstream:
 	@echo "Fetching and merging updates from upstream repository..."
@@ -258,8 +273,13 @@ help:
 	@echo "----------------------------------------------------------------------"
 	@echo "  Development"
 	@echo "----------------------------------------------------------------------"
+	@echo "  $(BLUE)make install$(NC)         - Install dependencies."
 	@echo "  $(BLUE)make start$(NC)             - Run the dev server."
-	@echo "  $(BLUE)make clean$(NC)             - Remove node_modules."
+	@echo "  $(BLUE)make lint$(NC)              - Lint the code."
+	@echo "  $(BLUE)make format$(NC)            - Format the code."
+	@echo "  $(BLUE)make docker-build$(NC)    - Build the docker image."
+	@echo "  $(BLUE)make docker-run$(NC)      - Run the docker container."
+	@echo "  $(BLUE)make clean$(NC)             - Remove virtual environment and __pycache__ files."
 	@echo ""
 	@echo "Run 'make [target] V=1' for verbose output."
 	@echo ""
