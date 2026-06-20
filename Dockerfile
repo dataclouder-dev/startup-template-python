@@ -11,7 +11,7 @@ COPY . .
 
 # Install dependencies
 RUN uv venv --python 3.12.7 && \
-    uv sync --locked --no-dev
+    uv sync --no-dev
 
 # Runtime stage
 # Se asume que /.venv existe en la imagen anterior en el path /app/.venv, tiene las dependencias instaladas. 

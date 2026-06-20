@@ -1,48 +1,88 @@
 from bson import ObjectId
-from dataclouder_core.models.models import FiltersConfig
 from dataclouder_mongo.mongo import get_db
 
-from app.generics.models.generic_model import GenericModel
+from pydantic import BaseModel
+from typing import Any, Optional, Union
 
-col_name = "generics"
-
-
-def find_generics(generic_id: str) -> dict:
-    """Get generic by id."""
-    collection = get_db()[col_name]
-    return collection.find_one({"_id": ObjectId(generic_id)})
+# TODO: in the future i'll move this to dataclouder_mongo
 
 
-def find_filtered_generics(filters: FiltersConfig) -> list:
-    """Get generics filtered."""
-    print(filters)
-    collection = get_db()[col_name]
-    return collection.find(filters.model_dump())
+class OperationDto(BaseModel):
+    action: str
+    query: Optional[dict] = None
+    payload: Optional[Union[dict, list]] = None
+    projection: Optional[dict] = None
+    options: Optional[dict] = None
 
 
-def save_generic(generic: GenericModel) -> GenericModel:
-    """Save generic insert if not exists, or update if exists."""
-    collection = get_db()[col_name]
+def convert_ids(data):
+    """
+    Recursively convert ObjectId to str in dictionaries and lists.
+    """
+    if isinstance(data, list):
+        return [convert_ids(item) for item in data]
+    if isinstance(data, dict):
+        return {k: convert_ids(v) if k != "_id" else str(v) if isinstance(v, ObjectId) else convert_ids(v) for k, v in data.items()}
+    if isinstance(data, ObjectId):
+        return str(data)
+    return data
 
-    # Convert the model to dict for manipulation
-    generic_dict = generic.model_dump()
 
-    if hasattr(generic, "id") and generic.id:
-        # Update existing document
-        query = {"_id": ObjectId(generic.id)}
-        # Remove id from the update data
-        generic_dict.pop("id", None)
+def ensure_object_id(query):
+    """
+    Ensure that _id in the query is a bson ObjectId if it's a string.
+    """
+    if not isinstance(query, dict):
+        return query
+    
+    if "_id" in query and isinstance(query["_id"], str) and ObjectId.is_valid(query["_id"]):
+        query["_id"] = ObjectId(query["_id"])
+    
+    return query
+
+
+
+def execute_operation(collection_name: str, operation: OperationDto) -> Any:
+    """Execute a generic database operation."""
+    collection = get_db()[collection_name]
+    action = operation.action
+    query = ensure_object_id(operation.query or {})
+    payload = operation.payload
+    projection = operation.projection
+    options = operation.options or {}
+
+    if action == "findOne":
+        result = collection.find_one(query, projection, **options)
+        return convert_ids(result)
+    elif action == "find":
+        results = list(collection.find(query, projection, **options))
+        return convert_ids(results)
+    elif action == "create":
+        if isinstance(payload, list):
+            result = collection.insert_many(payload)
+            return {"inserted_ids": [str(id) for id in result.inserted_ids]}
+        else:
+            result = collection.insert_one(payload)
+            return {"inserted_id": str(result.inserted_id)}
+    elif action == "updateOne":
+        result = collection.update_one(query, payload, **options)
+        return {"matched_count": result.matched_count, "modified_count": result.modified_count}
+    elif action == "updateMany":
+        result = collection.update_many(query, payload, **options)
+        return {"matched_count": result.matched_count, "modified_count": result.modified_count}
+    elif action == "deleteOne":
+        result = collection.delete_one(query, **options)
+        return {"deleted_count": result.deleted_count}
+    elif action == "deleteMany":
+        # Blocked for now as per requirements
+        raise ValueError(f"Blocked for now: {action}")
+    elif action == "aggregate":
+        if not isinstance(payload, list):
+             raise ValueError("Payload for aggregate must be a list (pipeline)")
+        results = list(collection.aggregate(payload))
+        return convert_ids(results)
+    elif action == "findOneAndReplace":
+        result = collection.find_one_and_replace(query, payload, **options)
+        return convert_ids(result)
     else:
-        # Create new document
-        query = {"_id": ObjectId()}
-
-    result = collection.find_one_and_replace(query, generic_dict, upsert=True, return_document=True)
-    result["_id"] = str(result["_id"])
-    return result
-
-
-def delete_generic(generic_id: str) -> dict:
-    """Delete generic."""
-    collection = get_db()[col_name]
-    collection.delete_one({"_id": ObjectId(generic_id)})
-    return {"message": "Generic deleted"}
+        raise ValueError(f"Unsupported action: {action}")

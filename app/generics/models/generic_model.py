@@ -8,5 +8,6 @@ class GenericModel(BaseModel):
     id: str
     name: str
     description: str
+    image: dict
     type: Literal["gen1", "gen2", "gen3"]
     relation: dict
